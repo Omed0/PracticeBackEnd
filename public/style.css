@@ -1,0 +1,50 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  height: 100vh;
+  box-sizing: border-box;
+  overflow: hidden;
+  background-color: #444;
+  font-family: monospace;
+  flex-direction: column;
+  padding: 60px 80px;
+}
+
+h1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  font-family: cursive;
+  font-weight: 600;
+  color: #ccc;
+  text-align: center;
+}
+
+h3 {
+  font-size: 1.2rem;
+  font-family: cursive;
+  font-weight: 600;
+  color: orangered;
+  padding: 10px 0;
+  margin-top: 30px;
+}
+p {
+  font-size: 1rem;
+  font-family: cursive;
+  font-weight: 400;
+  color: #ccc;
+  padding: 5px 0;
+  margin-bottom: 12px;
+}
+
+a {
+  text-decoration: none;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: chocolate;
+}
+
