@@ -2,11 +2,12 @@ const express = require('express')
 const app = express()
 const morgan = require('morgan')
 const mongoose = require('mongoose')
+require('dotenv').config()
 const Blog = require('./models/blog')
 
 
 //connect to mongo db
-const dbURI = 'mongodb+srv://Omed0:iBoy@cluster0.ds9sb1c.mongodb.net/node-tuts?retryWrites=true&w=majority'
+const dbURI = process.env.DBURI;
 mongoose.set('strictQuery', true)
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then((result) => app.listen(3000))
@@ -71,7 +72,7 @@ app.get('/about', (req, res) => {
 app.get('/blogs',(req, res)=>{
     Blog.find().sort({ createdAt: -1 /* reverse i henanaway datakan */ })
         .then((result)=>{
-             res.render('index', { title: 'All Blogs', blogs: result })
+             res.status(200).render('index', { title: 'All Blogs', blogs: result })
         })
         .catch((err)=>{
             console.log(err);
