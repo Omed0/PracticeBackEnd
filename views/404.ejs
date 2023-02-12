@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/style.css">
-    <title><%= title %></title>
-  </head>
-  <body>
-    <h3>404 ERROR: Nothing found</h3>
-    <br />
-    <a href="/">Go Home Page</a>
-  </body>
-</html>
+<%- include("./head.ejs") %>
+
+<body>
+  <%- include("./nav.ejs") %>
+
+  <div class="not-found content">
+    OOPS, page not found :)
+  </div>
+
+  <%- include("./footer.ejs") %>
+</body>
+</html> 

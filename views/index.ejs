@@ -1,31 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Blog <%= title %> Page</title>
-    <link rel="stylesheet" href="/style.css" />
-  </head>
-  <body>
-    <h1>Hi, there My Name is Omed im a MERN stack 🎉🔨</h1>
+<%- include("./head.ejs") %>
 
-    <% if (blogs.length > 0) {%> <% blogs.forEach(blog => { %>
+<body>
+  <%- include("./nav.ejs") %>
 
-    <a href="/blogs/<%= blog._id %>">
-      <h3><%= blog.title %></h3>
-    </a>
-    <p><%= blog.snippet %></p>
+  <div class="blogs content">
+    <h2>All Blogs</h2>
 
-    <% }) %> <% } else {%>
-    <p>There are no blogs to display...</p>
+    <% if (blogs.length > 0) { %>
+      <% blogs.forEach(blog => { %>
+        <a class="single" href="/blogs/<%= blog._id %>">
+          <h3 class="title"><%= blog.title %></h3>
+        </a>
+        <p class="snippet"><%= blog.snippet %></p>
+      <% }) %>
+    <% } else { %>
+      <p>There are no blogs to display...</p>
     <% } %>
 
-    <div
-      style="display: flex; flex-direction: column; gap: 1.6rem; margin: 3rem 0"
-    >
-      <a href="/blogs/create">Create New Blog</a>
-      <a href="/about">more about me</a>
-    </div>
-  </body>
-</html>
+  </div>
+
+  <%- include("./footer.ejs") %>
+</body>
+</html> 
