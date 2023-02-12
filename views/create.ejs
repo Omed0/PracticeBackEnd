@@ -1,35 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><%= title %></title>
-    <link rel="stylesheet" href="/style.css" />
-  </head>
-  <body>
+<%- include("./head.ejs") %>
 
+<body>
+  <%- include("./nav.ejs") %>
 
-    <div class="create_post">
+  <div class="create-blog content">
+    <form action="/blogs" method="POST">
+      <label for="title">Blog title:</label>
+      <input type="text" id="title" name="title" required>
+      <label for="snippet">Blog snippet:</label>
+      <input type="text" id="snippet" name="snippet" required>
+      <label for="body">Blog body:</label>
+      <textarea id="body" name="body" required></textarea>
+      <button>Submit</button>
+    </form>
+  </div>
 
-      <form action="/blogs" method="POST">
-        <div>
-          <label for="title">Blog title:</label>
-          <input type="text" id="title" name="title" required />
-        </div>
-        <div>
-          <label for="snippet">Blog snippet:</label>
-          <input type="text" id="snippet" name="snippet" required />
-        </div>
-        <div>
-          <label for="body">Blog body:</label>
-          <textarea name="body" id="body" required></textarea>
-        </div>
-        <button type="submit">Submit</button>
-      </form>
-
-    </div>
-
-
-  </body>
+  <%- include("./footer.ejs") %>
+</body>
 </html>
