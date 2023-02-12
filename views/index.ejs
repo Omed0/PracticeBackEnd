@@ -10,14 +10,22 @@
   <body>
     <h1>Hi, there My Name is Omed im a MERN stack 🎉🔨</h1>
 
-    <% blogs.forEach(blog => { %>
+    <% if (blogs.length > 0) {%> <% blogs.forEach(blog => { %>
 
+    <a href="/blogs/<%= blog._id %>">
       <h3><%= blog.title %></h3>
-      <p><%= blog.snippet %></p>
+    </a>
+    <p><%= blog.snippet %></p>
 
-    <% }) %>
+    <% }) %> <% } else {%>
+    <p>There are no blogs to display...</p>
+    <% } %>
 
-
-    <a href="/about">more about me</a>
+    <div
+      style="display: flex; flex-direction: column; gap: 1.6rem; margin: 3rem 0"
+    >
+      <a href="/blogs/create">Create New Blog</a>
+      <a href="/about">more about me</a>
+    </div>
   </body>
 </html>

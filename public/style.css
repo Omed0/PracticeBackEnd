@@ -48,3 +48,77 @@ a {
   color: chocolate;
 }
 
+.create_post {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+form {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 2rem;
+  background-color: #555;
+  color: #ccc;
+  border-radius: 4px;
+  gap: 1rem;
+}
+
+form > div > input  {
+  width: 275px;
+  color: #fff;
+  padding: 0.6rem 4px;
+  background-color: transparent;
+  border: none;
+  outline: none;  
+  border-bottom: 2px solid #ccc;
+}
+form > div {
+  display: flex;
+  flex-direction: column;
+}
+form > div > label {
+  margin-bottom: 2px;
+  margin-left: 4px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #ccc;
+  pointer-events: none;
+  transition: all 0.4s;
+}
+label:focus,
+label:valid {
+  top: 0;
+}
+
+form > div > textarea {
+  width: 275px;
+  font-size: 0.9rem;
+  color: #fff;
+  padding: 0.6rem 4px;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  border-bottom: 2px solid #ccc;
+  resize: none;
+}
+form > div > label[for="body"] {
+  margin-top: 15px;
+}
+
+form > button {
+  padding: 0.7rem 2.4rem;
+  margin-top: 40px;
+  background: linear-gradient(110deg, rgb(164, 104, 199),rgb(129, 25, 233));
+  border: 0;
+  border-radius: 6px;
+  color: #ccc;
+  cursor: pointer;
+  scale: 1;
+  transition: all 0.4s;
+}
+form > button:active {
+  scale: 0.8;
+}
