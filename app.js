@@ -19,8 +19,9 @@ app.set('view engine', 'ejs')
 
 //allow file in middleware to access
 app.use(express.static('public'))
+app.use(express.urlencoded({ extended: true }))
 //midlleware      {morgan}
-app.use(morgan('common'))
+app.use(morgan('dev'))
 
 app.get('/add-blog', (req, res)=>{
     const blog = new Blog({
@@ -77,6 +78,31 @@ app.get('/blogs',(req, res)=>{
         .catch((err)=>{
             console.log(err);
         })
+})
+
+app.post('/blogs', (req, res)=>{
+    const blog = new Blog(req.body)
+
+    blog.save()
+        .then((result)=>{
+            res.redirect('/blogs')
+        }).catch((err)=>{
+            console.log(err);
+        })
+})
+
+app.get('/blogs/:id', (req, res)=>{
+    const id = req.params.id
+    Blog.findById(id)
+        .then((result)=>{
+            res.render('details', { blog: result, title: 'Blog Details' })
+        }).catch((err)=>{
+            console.log(err);
+        })
+})
+
+app.get('/blogs/create', (req, res)=>{
+    res.render('create', { title:'Create a new Blog'})
 })
 
 //redirect page
