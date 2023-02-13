@@ -3,7 +3,7 @@ const app = express()
 const morgan = require('morgan') //for catch status and route
 const mongoose = require('mongoose')
 require('dotenv').config()
-const Blog = require('./models/blog')
+const blogRoutes = require('./routes/blogRoutes')
 
 
 
@@ -41,51 +41,9 @@ app.get('/about', (req, res) => {
     res.status(200).render('about', { title: 'about' })
 })
 
-
 //blog routes
-app.get('/blogs/create', (req, res) => {
-    res.render('create', { title: 'Create a new Blog' })
-})
+app.use('/blogs', blogRoutes)
 
-app.get('/blogs', (req, res) => {
-    Blog.find().sort({ createdAt: -1 /* reverse i henanaway datakan */ })
-        .then((result) => {
-            res.status(200).render('index', { title: 'All Blogs', blogs: result })
-        })
-        .catch((err) => {
-            console.log(err);
-        })
-})
-
-app.post('/blogs', (req, res) => {
-    const blog = new Blog(req.body)
-
-    blog.save()
-        .then((result) => {
-            res.redirect('/blogs')
-        }).catch((err) => {
-            console.log(err);
-        })
-})
-
-app.get('/blogs/:id', (req, res) => {
-    const id = req.params.id
-    Blog.findById(id)
-        .then((result) => {
-            res.render('details', { blog: result, title: 'Blog Details' })
-        })
-})
-
-
-app.delete('/blogs/:id', (req, res) => {
-    const id = req.params.id
-
-    Blog.findByIdAndDelete(id)
-        .then((result) => {
-            res.json({ code: 200, message: 'Updated successfully', redirect: '/blogs' })
-        })
-        .catch((err) => { console.log(err); })
-})
 
 //redirect page
 app.get('/about-us', (req, res) => {
