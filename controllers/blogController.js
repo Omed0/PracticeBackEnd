@@ -6,6 +6,7 @@ const blog_index = (req, res) => {
 
     Blog.find().sort({ createdAt: -1 }) // find all blogs and sort by created date reverse order
         .then((result) => {
+            console.log(req.user);
             res.status(200).render('blogs/index', { title: 'All Blogs', blogs: result })   // render the blog index page
         })
         .catch((err) => {
