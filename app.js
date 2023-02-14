@@ -2,8 +2,10 @@ const express = require('express')
 const app = express()
 const morgan = require('morgan') //for catch status and route
 const mongoose = require('mongoose')
+const bodyparser = require("body-parser");
 require('dotenv').config()
 const blogRoutes = require('./routes/blogRoutes')
+const signupRoutes = require('./routes/signupRoutes')
 
 
 
@@ -21,13 +23,13 @@ app.set('view engine', 'ejs')
 //allow file in middleware to access
 app.use(express.static('public'))
 app.use(express.urlencoded({ extended: true }))
+app.use(express.json())
 app.use((req, res, next) => {
     res.locals.path = req.path;
     next();
 });
 //midlleware      {morgan}
 app.use(morgan('dev'))
-
 
 
 //routes
@@ -44,11 +46,10 @@ app.get('/about', (req, res) => {
 //blog routes
 app.use('/blogs', blogRoutes)
 
+//user routes
+app.use('/user', signupRoutes )
 
-//redirect page
-app.get('/about-us', (req, res) => {
-    res.redirect('/about')
-})
+
 
 //404 page
 app.use((req, res) => {
