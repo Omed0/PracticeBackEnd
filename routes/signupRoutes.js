@@ -12,6 +12,6 @@ router.route('/')
 
 router.route('/:id')
     .get(userController.user_id_get)
-    .delete()
+    .delete(userController.user_id_delete)
 
 module.exports = router    // Path: routes\blogRoutes.js 

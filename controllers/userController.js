@@ -47,9 +47,21 @@ const user_id_get = (req, res) => {
         })
 }
 
+const user_id_delete = (req, res)=>{
+    const id = req.params.id
+
+    User.findByIdAndDelete(id)
+        .then(result => {
+            res.json({ code: 200, message: 'User delete successfully', redirect: '/user' })
+        }
+        )
+        .catch(err => console.log(err))
+}
+
 module.exports = {
     user_index,
     user_create_get,
     user_create_post,
     user_id_get,
+    user_id_delete,
 }

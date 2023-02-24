@@ -7,13 +7,13 @@ require('dotenv').config()
 const blogRoutes = require('./routes/blogRoutes')
 const signupRoutes = require('./routes/signupRoutes')
 
-
+ 
 
 //connect to mongo db
 const MongoDB = process.env.MONGO;
 mongoose.set('strictQuery', true)
 mongoose.connect(MongoDB, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then((result) => app.listen(3000))
+    .then((result) => app.listen(3000)+console.log("express running on http://localhost:3000"))
     .catch((err) => console.log(err))
 
 //register view engine
