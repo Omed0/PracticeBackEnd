@@ -1,19 +1,19 @@
 const express = require('express')
 const router = express.Router()
 const blogController = require('../controllers/blogController')
-
+const { protect } = require('../middleware/authMiddleware')
 
 
 //blog routes
-router.get('/create', blogController.blog_create_get)
+router.get('/create', protect, blogController.blog_create_get)
 
 router.route('/')
-    .post( blogController.blog_create_post )
-    .get( blogController.blog_index )
+    .post(protect, blogController.blog_create_post)
+    .get(protect, blogController.blog_index)
 
 router.route('/:id')
-    .get( blogController.blog_details )
-    .delete( blogController.blog_create_delete )
+    .get(protect, blogController.blog_details)
+    .delete(protect, blogController.blog_create_delete)
 
 
 // const users = [{ name: 'omed' }, { name: 'asi' }]

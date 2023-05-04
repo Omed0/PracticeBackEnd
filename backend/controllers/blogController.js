@@ -2,17 +2,12 @@ const Blog = require('../models/blog')
 
 
 
-const blog_index = (req, res) => {
+const blog_index = async (req, res) => {
 
     try {
-        Blog.find().sort({ createdAt: -1 }) // find all blogs and sort by created date reverse order
-            .then((result) => {
-                console.log(req.user);  // log the user
-                res.status(200).render('blogs/index', { title: 'All Blogs', blogs: result })   // render the blog index page
-            })
-            .catch((err) => {
-                console.log(err);  // if error then log it
-            })
+        const blog = await Blog.find({ user: req.user.id }).sort({ createdAt: -1 })
+        if(!blog) return 
+        res.status(200).render('blogs/index', { title: 'All Blogs', blogs: result })
     } catch (error) {
         console.log(error)
     }
@@ -36,22 +31,26 @@ const blog_details = (req, res) => {
 
 const blog_create_get = (req, res) => {
     try {
-        res.render('blogs/create', { title: 'Create a new Blog' }) // render the blog create page
+        res.render('blogs/create', { title: 'Create a new Blog' })
     } catch (error) {
         console.log(error)
     }
 }
 
 const blog_create_post = async (req, res) => {
-    const blog = await new Blog(req.body) // create a new blog
+    const blog = await Blog.create({
+        title: req.body.title,
+        snippet: req.body.snippet,
+        body: req.body.body,
+        user: req.user.id
+    })
 
     try {
-        blog.save()
-            .then((result) => {
-                res.redirect('/blogs') // redirect to blogs page
-            }).catch((err) => {
-                console.log(err); // if error then log it
-            })
+        if (!blog) {
+            res.status(400).json({ code: 400, message: 'create blog failed, no authorization' })
+        } else {
+            res.status(201).json({ code: 201, message: 'create blog successfully', redirect: '/blogs' })
+        }
     } catch (error) {
         console.log(error)
     }
