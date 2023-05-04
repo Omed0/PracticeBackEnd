@@ -10,7 +10,7 @@
 
     <% if (Users.length > 0) { %>
       <% Users.forEach(user => { %>
-        <a class="single" href="/user/<%= user._id %>">
+        <a class="single" href="/auth/<%= user._id %>">
           <h3 class="title"><%= user.email %></h3>
         </a>
         <p class="snippet"><%= user.username %></p>

@@ -7,6 +7,7 @@
 
     <div class="details content">
       <h2 class="user_name"><%= User.username %></h2>
+      <h3 class="user_name"><%= User.isAdmin %></h3>
       <div class="content">
         <p><b>password : </b> <%= User.password %></p>
       </div>
@@ -18,16 +19,16 @@
     <%- include("../partials/footer.ejs") %>
 
     <script>
-      const trashcan = document.querySelector('a.delete');
+      const trashcan = document.querySelector("a.delete");
       trashcan.addEventListener("click", (e) => {
         const id = trashcan.dataset.doc;
-        const endpoint = `/user/${id}`;
+        const endpoint = `/auth/${id}`;
         fetch(endpoint, {
-          method: "DELETE"
+          method: "DELETE",
         })
-          .then(response => response.json())
-          .then(data => window.location.href = data.redirect)
-          .catch(err => console.log(err));
+          .then((response) => response.json())
+          .then((data) => (window.location.href = data.redirect))
+          .catch((err) => console.log(err));
       });
     </script>
   </body>
