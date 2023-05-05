@@ -1,7 +1,7 @@
 const User = require('../models/user')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const { redirect } = require('next/dist/server/api-utils')
+const { generateToken } = require('../utils/generateToken')
 
 
 const user_index = (req, res) => {
@@ -102,26 +102,22 @@ const user_id_delete = (req, res) => {
 }
 
 
-const user_id_update = (req, res) => {
-    const { id } = req.params.id
+const user_id_update = async (req, res) => {
+    const id = req.params.id
+
+    const salt = await bcrypt.genSalt(12)
+    const hashedPassword = await bcrypt.hash(password, salt)
 
     const updateUser = {
         username: req.body.username,
         email: req.body.email,
-        password: req.body.password,
+        password: hashedPassword,
         isAdmin: req.body.isAdmin
     }
     try {
-        bcrypt.genSalt(10, (err, salt) => {
-            bcrypt.hash(updateUser.password, salt, (err, hash) => {
-                updateUser.password = hash
-                User.findByIdAndUpdate({ _id: id }, { updateUser })
-                    .then(result => {
-                        res.json({ code: 201, message: 'update user successfully', redirect: `/auth/${id}` })
-                    })
-                    .catch(err => console.log(err))
-            })
-        })
+        await User.findByIdAndUpdate(id, updateUser, { new: true })
+        res.json({ code: 201, message: 'update user successfully', redirect: `/auth/${id}` })
+
     } catch (err) { console.log(err); }
 }
 
@@ -163,15 +159,6 @@ const user_login_post = async (req, res) => {
         console.log(error)
         throw (error)
     }
-}
-
-// Generate JWT
-const generateToken = (id) => {
-    return jwt.sign(
-        { id },
-        process.env.JWT_SECRET,
-        { expiresIn: '30d' }
-    )
 }
 
 
