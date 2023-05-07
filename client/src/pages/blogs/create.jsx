@@ -1,11 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-  <%- include("../partials/head.ejs") %>
 
-  <body>
-    <%- include("../partials/nav.ejs") %>
 
-    <div class="create-blog content">
+export default function Create() {
+  return (
+    <div className="create-blog content">
       <form action="/blogs" method="POST">
         <label for="title">Blog title:</label>
         <input type="text" id="title" name="title" required />
@@ -16,7 +13,5 @@
         <button>Submit</button>
       </form>
     </div>
-
-    <%- include("../partials/footer.ejs") %>
-  </body>
-</html>
+  )
+}
