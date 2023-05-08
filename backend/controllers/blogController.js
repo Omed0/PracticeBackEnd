@@ -9,7 +9,7 @@ const blog_index = async (req, res) => {
         const blog = await Blog.find({ user: req.user.id }).sort({ createdAt: -1 })
 
         if (!blog) return res.status(400).json({ message: 'Your not authorized', redirect: '/auth' })
-        res.status(200).render('blogs/index', { title: 'All Blogs', blogs: blog })
+        res.status(200).json({ message: 'All Blogs Returned' })
     } catch (error) {
         console.log(error)
     }
@@ -29,19 +29,12 @@ const blog_details = async (req, res) => {
             res.status(400).json({ message: 'Not Authorized' })
         }
 
-        res.render('blogs/details', { blog: blog, title: 'Blog Details' })
+        res.status(200).json({ message: 'Blog Details' })
     } catch (error) {
         console.log(error)
     }
 }
 
-const blog_create_get = (req, res) => {
-    try {
-        res.render('blogs/create', { title: 'Create a new Blog' })
-    } catch (error) {
-        console.log(error)
-    }
-}
 
 const blog_create_post = async (req, res) => {
     const blog = await Blog.create({
@@ -111,7 +104,6 @@ const blog_create_update = async (res, req) => {
 module.exports = {
     blog_index,
     blog_details,
-    blog_create_get,
     blog_create_post,
     blog_create_update,
     blog_create_delete,

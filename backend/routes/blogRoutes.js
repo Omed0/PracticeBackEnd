@@ -5,8 +5,6 @@ const { protect } = require('../middleware/authMiddleware')
 
 
 //blog routes
-router.get('/create', protect, blogController.blog_create_get)
-
 router.route('/')
     .post(protect, blogController.blog_create_post)
     .get(protect, blogController.blog_index)
