@@ -1,13 +1,12 @@
 const User = require('../models/user')
 const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
 const { generateToken } = require('../utils/generateToken')
 
 
 const user_index = async (req, res) => {
     try {
         const allUser = await User.find().sort({ createdAt: -1 }) // find all blogs and sort by created date reverse order
-        res.status(200).json({ message: 'All Users Returned' })
+        res.status(200).json({ message: 'all users returned', allUser })
 
         console.log(allUser);  // log the user
 
@@ -15,7 +14,6 @@ const user_index = async (req, res) => {
         console.log(error)
     }
 }
-
 
 const user_create_post = async (req, res) => {
 
@@ -76,15 +74,13 @@ const user_id_get = async (req, res) => {
 }
 
 
-const user_id_delete = (req, res) => {
+const user_id_delete = async (req, res) => {
     const id = req.params.id
 
     try {
-        User.findByIdAndDelete(id)
-            .then(result => {
-                res.json({ code: 204, message: 'User delete successfully', redirect: '/auth' })
-            }
-            )
+        const deleteUser = await User.findByIdAndDelete(id)
+        res.status(204).json({ code: 204, message: 'User delete successfully', deleteUser, redirect: '/auth' })
+
             .catch(err => console.log(err))
     } catch (error) { console.log(error); }
 }
@@ -104,7 +100,7 @@ const user_id_update = async (req, res) => {
     }
     try {
         await User.findByIdAndUpdate(id, updateUser, { new: true })
-        res.json({ code: 201, message: 'update user successfully', redirect: `/auth/${id}` })
+        res.status(201).json({ code: 201, message: 'update user successfully', updateUser, redirect: `/auth/${id}` })
 
     } catch (err) { console.log(err); }
 }

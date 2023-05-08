@@ -6,10 +6,10 @@ const User = require('../models/user')
 const blog_index = async (req, res) => {
 
     try {
-        const blog = await Blog.find({ user: req.user.id }).sort({ createdAt: -1 })
+        const blogs = await Blog.find({ user: req.user.id }).sort({ createdAt: -1 })
 
-        if (!blog) return res.status(400).json({ message: 'Your not authorized', redirect: '/auth' })
-        res.status(200).json({ message: 'All Blogs Returned' })
+        if (!blogs) return res.status(400).json({ message: 'Your not authorized', redirect: '/auth' })
+        res.status(200).json({ message: 'All Blogs Returned', blogs })
     } catch (error) {
         console.log(error)
     }
@@ -29,7 +29,7 @@ const blog_details = async (req, res) => {
             res.status(400).json({ message: 'Not Authorized' })
         }
 
-        res.status(200).json({ message: 'Blog Details' })
+        res.status(200).json({ message: 'Blog Details', blog })
     } catch (error) {
         console.log(error)
     }
@@ -48,7 +48,7 @@ const blog_create_post = async (req, res) => {
         if (!blog) {
             res.status(400).json({ code: 400, message: 'create blog failed, no authorization' })
         } else {
-            res.status(201).json({ code: 201, message: 'create blog successfully', redirect: '/blogs' })
+            res.status(201).json({ code: 201, message: 'create blog successfully', blog, redirect: '/blogs' })
         }
     } catch (error) {
         console.log(error)
@@ -77,10 +77,10 @@ const blog_create_delete = async (req, res) => {
     }
 }
 
-const blog_create_update = async (res, req) => {
+const blog_create_update = async (req, res) => {
     const id = req.params.id
 
-    const blog = await Blog.findByIdAndUpdate(id)
+    const blog = await Blog.findById(id)
     const user = await User.findById(req.user.id)
 
     try {
@@ -90,8 +90,8 @@ const blog_create_update = async (res, req) => {
         if (blog.user.toString() !== user.id) {
             res.status(400).json({ message: 'Not Authorized' })
         }
-        await blog.save({ _id: id }, { ...req.body })
-        res.json({ code: 201, message: 'update blog successfully', redirect: `/blogs/${id}` })
+        const updateBlog = await blog.updateOne({ _id: id, ...req.body })
+        res.status(200).json({ message: 'Blog Updated', updateBlog })
 
     } catch (error) {
         console.log(error)

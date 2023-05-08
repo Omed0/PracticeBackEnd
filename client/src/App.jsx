@@ -12,9 +12,11 @@ export default function App() {
         <UseDocumentTitle title='Home' />
         <Nav />
       </header>
+
       <main>
         <h1>Home</h1>
       </main>
+
       <footer>
         <Footer />
       </footer>

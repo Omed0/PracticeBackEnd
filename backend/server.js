@@ -31,7 +31,7 @@ app.get('/', (req, res) => {
     res.status(302).redirect('/blogs')
 })
 app.get('/about', (req, res) => {
-    res.status(200).render('about', { title: 'about' })
+    res.status(200).json({ message: 'Return about Me' })
 })
 
 app.use('/blogs', blogRoutes)
