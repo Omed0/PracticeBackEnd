@@ -11,7 +11,7 @@ import User from "./pages/users/user.jsx";
 import ProfileUser from "./pages/users/profileUser.jsx";
 import Signup from "./pages/users/signup.jsx";
 import NoMatch from "./components/error/nomatch.jsx";
-import ErrorPage from "./components/error-page.jsx";
+import ErrorPage from "./components/error/error-page.jsx";
 
 
 import { store } from './app/store.js';
@@ -27,11 +27,11 @@ import {
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/" errorElement={<ErrorPage />} index={true} element={<App />}>
+    <Route path="/" errorElement={<ErrorPage />} element={<App />}>
 
-      <Route path="/" element={<Home />}>
+      <Route index={true} element={<Home />} />
 
-        <Route path="blogs" />
+      <Route path="blogs" >
         <Route index={true} element={<Blogs />} />
         <Route path="create" element={<Create />} />
         <Route path=":id" element={<Blog />} />
