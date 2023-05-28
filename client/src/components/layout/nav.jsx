@@ -9,7 +9,7 @@ export default function nav() {
                 <p>Omed Site</p>
             </div>
             <ul>
-                <li><NavLink to="/about">About</NavLink></li>
+                <li><NavLink to="/">Home</NavLink></li>
                 <li><NavLink to="/blogs">Blogs</NavLink></li>
                 <li><NavLink to="/blogs/create">New Blog</NavLink></li>
                 <li><NavLink to="/users">users</NavLink></li>
