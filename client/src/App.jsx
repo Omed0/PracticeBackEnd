@@ -1,7 +1,7 @@
 import Nav from './components/layout/nav'
 import Footer from './components/layout/footer'
 import UseDocumentTitle from './components/layout/head'
-
+import { Outlet } from 'react-router-dom'
 
 export default function App() {
 
@@ -14,7 +14,7 @@ export default function App() {
       </header>
 
       <main>
-        <h1>Home</h1>
+        <Outlet />
       </main>
 
       <footer>

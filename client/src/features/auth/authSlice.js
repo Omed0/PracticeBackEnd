@@ -1,4 +1,5 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit'
+import { login, register } from './authService'
 
 
 // get user from local storage
@@ -23,37 +24,38 @@ export const authSlice = createSlice({
             state.message = ''
         }
     },
-    extraReducers: {
+    extraReducers(builder) {
         // login
-        [login.pending]: (state) => {
-            state.isLoading = true
-        },
-        [login.fulfilled]: (state, { payload }) => {
-            state.isLoading = false
-            state.isSuccess = true
-            state.user = payload
-        },
-        [login.rejected]: (state, { payload }) => {
-            state.isLoading = false
-            state.isError = true
-            state.message = payload
-        },
+        builder.
+            addCase(login.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(login.fulfilled, (state, { payload }) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.user = payload
+            })
+            .addCase(login.rejected, (state, { payload }) => {
+                state.isLoading = false
+                state.isError = true
+                state.message = payload
+            })
         // register
-        [register.pending]: (state) => {
-            state.isLoading = true
-        },
-        [register.fulfilled]: (state, { payload }) => {
-            state.isLoading = false
-            state.isSuccess = true
-            state.user = payload
-        },
-        [register.rejected]: (state, { payload }) => {
-            state.isLoading = false
-            state.isError = true
-            state.message = payload
-        },
+        builder
+            .addCase(register.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(register.fulfilled, (state, { payload }) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.user = payload
+            })
+            .addCase(register.rejected, (state, { payload }) => {
+                state.isLoading = false
+                state.isError = true
+                state.message = payload
+            })
     },
-
 })
 
 export const { reset } = authSlice.actions

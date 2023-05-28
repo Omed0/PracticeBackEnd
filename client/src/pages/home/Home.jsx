@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
 
-export default function about() {
+export default function Home() {
     return (
         <div>
-            <div className="about content">
+            <section>
                 <h1>
                     Now im Practice on Node JS 🔮<br />
                     for backend and this is my first app express library ♟
@@ -12,7 +12,7 @@ export default function about() {
                 <h4>
                     <Link to="/">Go to Home</Link>
                 </h4>
-            </div>
+            </section>
         </div>
     )
 }
