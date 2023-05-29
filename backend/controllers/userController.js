@@ -25,8 +25,9 @@ const user_create_post = async (req, res) => {
 
     const userExist = await User.findOne({ email })
     if (userExist) {
-        return res.status(400).json({ message: 'Email already exist' })
+        return res.status(400).json({ message: "User already exist." })
     }
+
     // if (password !== confirmPassword) return res.status(400).json({ message: "Password don't match." });
 
     try {
@@ -43,6 +44,7 @@ const user_create_post = async (req, res) => {
             res.status(201).json({
                 _id: user.id,
                 email: user.email,
+                password: user.password,
                 isAdmin: user.isAdmin,
                 token: generateToken(user._id),
             })
@@ -50,28 +52,26 @@ const user_create_post = async (req, res) => {
             res.status(400).json({ message: 'Invalid user data' })
         }
 
-
     } catch (err) { console.log(err); }
 }
 
 
 const user_id_get = async (req, res) => {
+    const id = req.params.id;
 
     try {
-        const { _id, username, email, password } = await User.findById(req.user.id)
-        res.status(200).json({
-            _id,
-            username,
-            email,
-            password
-        })
+        const user = await User.findOne({ _id: id });
 
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
 
-        // res.status(404).render('404', { title: 'User not found' }) 
+        res.status(200).json({ message: 'User Details', user });
     } catch (error) {
-        console.log(error)
+        console.log(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
-}
+};
 
 
 const user_id_delete = async (req, res) => {
@@ -79,6 +79,7 @@ const user_id_delete = async (req, res) => {
 
     try {
         const deleteUser = await User.findByIdAndDelete(id)
+        if (!deleteUser) return res.status(400).json({ message: 'User not found' });
         res.status(204).json({ code: 204, message: 'User delete successfully', deleteUser, redirect: '/auth' })
 
             .catch(err => console.log(err))
@@ -91,6 +92,7 @@ const user_id_update = async (req, res) => {
 
     const salt = await bcrypt.genSalt(12)
     const hashedPassword = await bcrypt.hash(password, salt)
+    const existUser = await User.findById(id)
 
     const updateUser = {
         username: req.body.username,
@@ -98,9 +100,13 @@ const user_id_update = async (req, res) => {
         password: hashedPassword,
         isAdmin: req.body.isAdmin
     }
+    if (!username || !email || !password || !isAdmin) return res.status(400).json({ message: 'Please fill all the fields' })
+    if (!existUser) return res.status(400).json({ message: 'User not found' });
+
     try {
-        await User.findByIdAndUpdate(id, updateUser, { new: true })
-        res.status(201).json({ code: 201, message: 'update user successfully', updateUser, redirect: `/auth/${id}` })
+        const user = await User.findByIdAndUpdate(id, updateUser, { new: true })
+        if (!user) return res.status(400).json({ message: 'User not found' });
+        res.status(200).json({ code: 200, message: 'User update successfully', user, redirect: '/auth' });
 
     } catch (err) { console.log(err); }
 }
@@ -120,8 +126,6 @@ const user_login_post = async (req, res) => {
 
         const isPasswordCorrect = await bcrypt.compare(password, userExist.password)
         if (!isPasswordCorrect) return res.status(400).json({ message: "Invalid credentials." });
-
-        else if (userExist.isAdmin !== isAdmin) return res.status(403).json({ message: "your not allowed." });
 
         else {
             res.status(200).json({
