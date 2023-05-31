@@ -7,10 +7,10 @@ const { protect } = require('../middleware/authMiddleware')
 //blog routes
 router.route('/')
     .post(protect, blogController.blog_create_post)
-    .get(protect, blogController.blog_index)
+    .get(blogController.blog_index)
 
 router.route('/:id')
-    .get(protect, blogController.blog_details)
+    .get(blogController.blog_details)
     .delete(protect, blogController.blog_create_delete)
     .patch(protect, blogController.blog_create_update)
 

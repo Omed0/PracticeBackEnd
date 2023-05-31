@@ -23,7 +23,7 @@ const blog_details = async (req, res) => {
 
     try {
         if (!user) {
-            res.status(400).json({ message: 'User Not Found' })
+            res.status(400).json({ message: 'Please create a user to see posts' })
         }
         if (blog.user.toString() !== user.id) {
             res.status(400).json({ message: 'Not Authorized' })

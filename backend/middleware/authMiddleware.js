@@ -1,8 +1,10 @@
 const jwt = require('jsonwebtoken')
 const User = require('../models/user')
 
+
 const protect = async (req, res, next) => {
     let token = null
+    //i want create token and authorization for specific user like admin
 
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
         try {
@@ -20,13 +22,13 @@ const protect = async (req, res, next) => {
         } catch (error) {
             console.log(error)
             res.status(401).json({ message: 'Not authorized' })
-            throw new Error(error)
+            // throw new Error('Not authorized, token failed')
         }
     }
 
     if (!token) {
         res.status(401).json({ message: 'Not authorized, no token' })
-        throw new Error('Not authorized, no token')
+        // throw new Error('Not authorized, no token')
     }
 }
 
