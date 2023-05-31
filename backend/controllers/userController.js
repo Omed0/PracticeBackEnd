@@ -15,7 +15,7 @@ const user_index = async (req, res) => {
     }
 }
 
-const user_create_post = async (req, res) => {
+const user_create = async (req, res) => {
 
     const { username, email, password, isAdmin } = req.body
 
@@ -28,6 +28,12 @@ const user_create_post = async (req, res) => {
         return res.status(400).json({ message: "User already exist." })
     }
 
+    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
+    if (!passwordRegex.test(password)) {
+        return res.status(400).json({ message: 'Invalid password format' });
+    }
+
+
     // if (password !== confirmPassword) return res.status(400).json({ message: "Password don't match." });
 
     try {
@@ -35,10 +41,10 @@ const user_create_post = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, salt)
 
         const user = await User.create({
-            username: req.body.username,
-            email: req.body.email,
+            username: username,
+            email: email,
             password: hashedPassword,
-            isAdmin: req.body.isAdmin,
+            isAdmin: isAdmin,
         })
         if (user) {
             res.status(201).json({
@@ -90,18 +96,25 @@ const user_id_delete = async (req, res) => {
 const user_id_update = async (req, res) => {
     const id = req.params.id
 
+    const { username, email, password, isAdmin } = req.body
+
     const salt = await bcrypt.genSalt(12)
     const hashedPassword = await bcrypt.hash(password, salt)
     const existUser = await User.findById(id)
 
     const updateUser = {
-        username: req.body.username,
-        email: req.body.email,
+        username: username,
+        email: email,
         password: hashedPassword,
-        isAdmin: req.body.isAdmin
+        isAdmin: isAdmin
     }
     if (!username || !email || !password || !isAdmin) return res.status(400).json({ message: 'Please fill all the fields' })
     if (!existUser) return res.status(400).json({ message: 'User not found' });
+
+    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
+    if (!passwordRegex.test(updateUser.password)) {
+        return res.status(400).json({ message: 'Invalid password format' });
+    }
 
     try {
         const user = await User.findByIdAndUpdate(id, updateUser, { new: true })
@@ -113,10 +126,10 @@ const user_id_update = async (req, res) => {
 
 // Login Function
 
-const user_login_post = async (req, res) => {
+const user_login = async (req, res) => {
 
-    const { email, password, isAdmin } = req.body;
-    if (!email || !password || !isAdmin) {
+    const { email, password } = req.body;
+    if (!email || !password) {
         return res.status(400).json({ message: 'Please fill all the fields' })
     }
 
@@ -145,9 +158,9 @@ const user_login_post = async (req, res) => {
 
 module.exports = {
     user_index,
-    user_create_post,
+    user_create,
     user_id_get,
     user_id_update,
     user_id_delete,
-    user_login_post,
+    user_login,
 }

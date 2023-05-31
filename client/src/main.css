@@ -127,16 +127,18 @@ textarea {
 .form_create_user {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   flex-direction: column;
 }
+
 .form_create_user input {
   width: 200px;
   margin: 10px;
   padding: 10px;
 }
 .form_create_user button {
-  margin: 10px;
+  width: 90%;
+  margin: 10px auto;
   padding: 10px;
   background: crimson;
   color: white;
@@ -156,6 +158,12 @@ textarea {
 .form_create_user input:focus {
   outline: none;
   border: 1px solid crimson;
+}
+
+.form_create_user a,
+label,
+select {
+  margin: 0 12px;
 }
 
 .user_name {

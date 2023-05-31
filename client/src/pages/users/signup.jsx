@@ -6,6 +6,7 @@ const initialState = { name: '', email: '', password: '', isAdmin: 'admin' }
 export default function signup() {
     const [formData, setFormData] = useState(initialState)
     const [isSignup, setIsSignup] = useState(false)
+    const [passwordError, setPasswordError] = useState('');
 
     const switchMode = () => {
         setIsSignup((prevIsSignup) => !prevIsSignup)
@@ -21,18 +22,28 @@ export default function signup() {
         e.preventDefault();
         console.log(formData);
 
-        // if (isSignup) {
-        //   dispatch(signup(formData))
-        // } else {
-        //   dispatch(signin(formData))
-        // }
+        const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{6,}$/;
+        if (!passwordRegex.test(formData.password)) {
+            setPasswordError('Invalid password format*');
+            return;
+        }
+
+        try {
+            console.log(formData);
+            setFormData(initialState)
+            setPasswordError('');
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     return (
         <div className="register">
             <div>
                 <h2>{isSignup ? 'Sign Up' : 'Sign In'}</h2>
+
             </div>
+            <p style={{ color: "red" }} > {passwordError}</p>
             <form onSubmit={handleSubmit} className="form_create_user" method="POST">
                 {
                     isSignup && (
@@ -77,6 +88,6 @@ export default function signup() {
                 </a>
                 <button type="submit" className="btn_create_user">{isSignup ? 'Submit' : 'Login'}</button>
             </form>
-        </div>
+        </div >
     )
 }
