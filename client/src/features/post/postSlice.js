@@ -62,26 +62,26 @@ const postSlice = createSlice({
 });
 
 // create post
-export const createPost = createAsyncThunk
-    ("post/createPost", async (post, { rejectWithValue }) => {
-        try {
-            const { data } = await createPost(post);
-            return data;
-        } catch (error) {
-            return rejectWithValue(error.response.data);
-        }
-    });
+export const createPostAction = (initialPost) => async (dispatch) => {
+    try {
+        dispatch(postRequest());
+        const { data } = await createPost(initialPost);
+        dispatch(postSuccess(data));
+    } catch (error) {
+        dispatch(postFail(error.message));
+    }
+};
 
 // fetch all posts
-export const fetchPosts = createAsyncThunk
-    ("post/fetchPosts", async (post, { rejectWithValue }) => {
-        try {
-            const { data } = await fetchPosts(post);
-            return data;
-        } catch (error) {
-            return rejectWithValue(error.response.data);
-        }
-    });
+export const fetchPostsAction = () => async (dispatch) => {
+    try {
+        dispatch(postRequest());
+        const { data } = await fetchPosts();
+        dispatch(postSuccess(data));
+    } catch (error) {
+        dispatch(postFail(error.message));
+    }
+};
 
 // user by id
 export const specificPostAction = (id) => async (dispatch) => {

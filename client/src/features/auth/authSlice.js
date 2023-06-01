@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { login, register, fetchAllUser, fetchUser, updateUser, deleteUser } from './authService'
+import { login, register, fetchUsers, fetchUser, updateUser, deleteUser } from './authService'
 
 
 // get user from local storage
@@ -23,7 +23,7 @@ export const authSlice = createSlice({
         userSuccess: (state, { payload }) => {
             state.isLoading = false
             state.isSuccess = true
-            state.user = payload
+            state.user = payload ? payload : null
         },
         userFail: (state, { payload }) => {
             state.isLoading = false
@@ -35,7 +35,7 @@ export const authSlice = createSlice({
             state.isLoading = false
             state.isError = false
             state.isSuccess = false
-            state.message = ''
+            state.message = 'logout successfully'
             localStorage.removeItem('user')
         }
     },
@@ -48,7 +48,7 @@ export const authSlice = createSlice({
             .addCase(login.fulfilled, (state, { payload }) => {
                 state.isLoading = false
                 state.isSuccess = true
-                state.user = payload
+                state.user = payload ? payload : null
             })
             .addCase(login.rejected, (state, { payload }) => {
                 state.isLoading = false
@@ -57,15 +57,15 @@ export const authSlice = createSlice({
             })
         // register
         builder
-            .addCase(registerUser.pending, (state) => {
+            .addCase(register.pending, (state) => {
                 state.isLoading = true
             })
-            .addCase(registerUser.fulfilled, (state, { payload }) => {
+            .addCase(register.fulfilled, (state, { payload }) => {
                 state.isLoading = false
                 state.isSuccess = true
-                state.user = payload
+                state.user = payload ? payload : null
             })
-            .addCase(registerUser.rejected, (state, { payload }) => {
+            .addCase(register.rejected, (state, { payload }) => {
                 state.isLoading = false
                 state.isError = true
                 state.message = payload
@@ -74,30 +74,41 @@ export const authSlice = createSlice({
 })
 
 // register user
-export const registerUser = createAsyncThunk('auth/register', async (userData) => {
+export const registerUser = (userData) => async (dispatch) => {
     try {
+        dispatch(userRequest())
         const { data } = await register(userData)
-        return data;
+        dispatch(userSuccess(data))
     } catch (error) {
-        return error.response.data.message
+        dispatch(userFail(error.message))
     }
-})
+}
 
 // login user
-export const loginUser = createAsyncThunk('auth/login', async (userData) => {
+export const loginUser = (userData) => async (dispatch) => {
     try {
+        dispatch(userRequest())
         const { data } = await login(userData)
-        return data;
+        dispatch(userSuccess(data))
     } catch (error) {
-        return error.response.data.message
+        dispatch(userFail(error.message))
     }
-})
+}
+
+// logout user
+export const logoutUser = () => async (dispatch) => {
+    try {
+        return await dispatch(reset())
+    } catch (error) {
+        dispatch(userFail(error.message))
+    }
+}
 
 // fetch all user
 export const fetchAllUser = () => async (dispatch) => {
     try {
         dispatch(userRequest())
-        const { data } = await fetchAllUser()
+        const { data } = await fetchUsers()
         dispatch(userSuccess(data))
     } catch (error) {
         dispatch(userFail(error.message))
@@ -105,7 +116,7 @@ export const fetchAllUser = () => async (dispatch) => {
 }
 
 // fetch user by id in localstorage
-export const fetchUser = () => async (dispatch) => {
+export const fetchUserById = () => async (dispatch) => {
     const { id } = JSON.parse(localStorage.getItem('user'))
     try {
         dispatch(userRequest())
@@ -117,7 +128,7 @@ export const fetchUser = () => async (dispatch) => {
 }
 
 // update user by id in localstorage
-export const updateUser = (userData) => async (dispatch) => {
+export const updateUserById = (userData) => async (dispatch) => {
     const { id } = JSON.parse(localStorage.getItem('user'))
     try {
         dispatch(userRequest())
@@ -129,7 +140,7 @@ export const updateUser = (userData) => async (dispatch) => {
 }
 
 // delete user by id in localstorage
-export const deleteUser = () => async (dispatch) => {
+export const deleteUserById = () => async (dispatch) => {
     const { id } = JSON.parse(localStorage.getItem('user'))
     try {
         dispatch(userRequest())

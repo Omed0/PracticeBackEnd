@@ -22,19 +22,8 @@ export const login = createAsyncThunk("auth/login", async (userData) => {
     }
 })
 
-//logout user
-// export const logoutUserId = createAsyncThunk("auth/logout", async () => {
-//     const { id } = JSON.parse(localStorage.getItem('userInfo'))
-//     try {
-//         const response = await API.post(`/auth/logout/${id}`)
-//         if (id && response.status === 200) return response.data
-//         return `${response.status} : ${response.statusText}`
-//     } catch (error) {
-//         return error.response.data.message
-//     }
-// })
-
-export const fetchAllUser = createAsyncThunk("auth/fetchAllUser", async () => {
+// ===================== users =====================//
+export const fetchUsers = createAsyncThunk("auth/fetchUsers", async () => {
     try {
         const response = await API.get(`/auth`);
         if (response?.status === 200) return response.data;
