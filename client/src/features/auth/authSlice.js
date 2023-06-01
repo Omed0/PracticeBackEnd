@@ -58,6 +58,12 @@ export const authSlice = createSlice({
     },
 })
 
+export const selectUser = (state) => state.auth.user
+export const selectIsLoading = (state) => state.auth.isLoading
+export const selectIsError = (state) => state.auth.isError
+export const selectIsSuccess = (state) => state.auth.isSuccess
+export const selectMessage = (state) => state.auth.message
+
 export const { reset } = authSlice.actions
 
 export default authSlice.reducer

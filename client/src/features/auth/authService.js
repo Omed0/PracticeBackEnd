@@ -2,46 +2,78 @@ import { API } from '../../api/customAxios'
 import { createAsyncThunk } from '@reduxjs/toolkit'
 
 
+//===================== AUTH =====================//
 //register user
 export const register = createAsyncThunk("auth/register", async (userData) => {
     try {
-        const response = await API.post('/user/signup', userData)
+        const response = await API.post('/auth/signup', userData)
         return response.data
     } catch (error) {
         return error.response.data.message
     }
 })
-
 //login user
 export const login = createAsyncThunk("auth/login", async (userData) => {
     try {
-        const response = await API.post('/user/signin', userData)
+        const response = await API.post('/auth/signin', userData)
         return response.data
     } catch (error) {
         return error.response.data.message
     }
 })
 
-
-// export const fetchPosts = () => API.get('/post');
-// export const createPost = (newPost) => API.post('/post', newPost);
-// export const likePost = (id) => API.patch(`/post/${id}/likePost`);
-// export const updatePost = (id, updatedPost) => API.patch(`/post/${id}`, updatedPost);
-// export const deletePost = (id) => API.delete(`/post/${id}`);
-
-// export const fetchPosts = createAsyncThunk("posts/fetchPosts", async () => {
-//     const response = await axios.get(BASE_URL)
-//     console.log(response.data)
-//     return response?.data
-// })
-
-// export const deletePost = createAsyncThunk("post/deletePost", async (initialPost) => {
-//     const { id } = initialPost
+//logout user
+// export const logoutUserId = createAsyncThunk("auth/logout", async () => {
+//     const { id } = JSON.parse(localStorage.getItem('userInfo'))
 //     try {
-//         const response = await axios.delete(`${BASE_URL}/${id}`);
-//         if (response?.status === 200) return initialPost;
-//         return `${response.status} : ${response.statusText}`;
+//         const response = await API.post(`/auth/logout/${id}`)
+//         if (id && response.status === 200) return response.data
+//         return `${response.status} : ${response.statusText}`
 //     } catch (error) {
-//         return error.message
+//         return error.response.data.message
 //     }
 // })
+
+export const fetchAllUser = createAsyncThunk("auth/fetchAllUser", async () => {
+    try {
+        const response = await API.get(`/auth`);
+        if (response?.status === 200) return response.data;
+        return `${response.status} : ${response.statusText}`;
+    }
+    catch (error) {
+        return error.message
+    }
+})
+//fetch user by id in localstorage
+export const fetchUser = createAsyncThunk("auth/fetchUser", async () => {
+    const { id } = JSON.parse(localStorage.getItem('userInfo'))
+    try {
+        const response = await API.get(`/auth/${id}`)
+        if (id && response.status === 200) return response.data
+        return `${response.status} : ${response.statusText}`
+    } catch (error) {
+        return error.response.data.message
+    }
+})
+//dalete user by id in localstorage
+export const deleteUser = createAsyncThunk("auth/deleteUser", async () => {
+    const { id } = JSON.parse(localStorage.getItem('userInfo'))
+    try {
+        const response = await API.delete(`/auth/${id}`)
+        if (id && response.status === 200) return response.data
+        return `${response.status} : ${response.statusText}`
+    } catch (error) {
+        return error.response.data.message
+    }
+})
+//update user by id in localstorage
+export const updateUser = createAsyncThunk("auth/updateUser", async (userData) => {
+    const { id } = JSON.parse(localStorage.getItem('userInfo'))
+    try {
+        const response = await API.patch(`/auth/${id}`, userData)
+        if (id && response.status === 200) return response.data
+        return `${response.status} : ${response.statusText}`
+    } catch (error) {
+        return error.response.data.message
+    }
+})
