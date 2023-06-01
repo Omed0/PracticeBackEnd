@@ -24,7 +24,7 @@ export default function profileUser() {
     return (
         <div>
             {
-                user.length ?
+                user && user.length > 0 ?
                     user.map((user) => {
                         return (
                             <div key={user._id} className="details content" >

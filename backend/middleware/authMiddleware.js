@@ -32,5 +32,15 @@ const protect = async (req, res, next) => {
     }
 }
 
+const isAdmin = async (req, res, next) => {
+    if (req.user && req.user.isAdmin === 'admin') {
+        next()
+    } else {
+        res.status(401).json({ message: 'Not authorized as an admin' })
+        // throw new Error('Not authorized as an admin')
+    }
+}
 
-module.exports = { protect }
+
+
+module.exports = { protect, isAdmin }
