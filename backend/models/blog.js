@@ -2,10 +2,15 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const blogSchema = new Schema({
-    user: {
+    userId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: 'User',
+        ref: 'UserId',
+    },
+    author: {
+        type: String,
+        required: true,
+        ref: 'Author',
     },
     title: {
         type: String,

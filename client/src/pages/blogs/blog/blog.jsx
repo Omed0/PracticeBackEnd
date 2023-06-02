@@ -1,30 +1,38 @@
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { specificPostAction, deletePostAction } from "../../../features/post/postSlice";
 import trashcan from '../../../assets/trashcan.svg'
 
-export default function blog(blog) {
+export default function blog() {
+  const [blogs, setBlogs] = useState([]);
 
-  const trash = () => {
-    const endpoint = `/blog/${blog._id}`;
-    fetch(endpoint, {
-      method: "DELETE",
-    })
-      .then((response) => response.json())
-      .then((data) => (window.location.href = data.redirect))
-      .catch((err) => console.log(err));
+  const trash = async () => {
+    console.log("blog id : " + blog._id)
+    await deletePostAction(blog._id);
   }
 
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      const { data } = await specificPostAction();
+      setBlogs(data);
+    };
+
+    fetchBlogs();
+    trash();
+  }, [blogs, setBlogs]);
 
   return (
     <div>
-      <div className="details content">
+      <section className="details content">
         <h2>{blog.title}</h2>
+        <small>{blog.author}</small>
         <div className="content">
           <p>{blog.body}</p>
         </div>
         <Link className="delete" onClick={trash}>
-          <img src={trashcan} alt="" />
+          <img src={trashcan} alt='delete blog' />
         </Link>
-      </div>
+      </section>
 
     </div>
   )
