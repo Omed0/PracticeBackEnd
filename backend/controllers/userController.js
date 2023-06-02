@@ -27,19 +27,15 @@ const user_create = async (req, res) => {
     if (userExist) {
         return res.status(400).json({ message: "User already exist." })
     }
-
     const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
     if (!passwordRegex.test(password)) {
         return res.status(400).json({ message: 'Invalid password format' });
     }
-
-
     // if (password !== confirmPassword) return res.status(400).json({ message: "Password don't match." });
 
     try {
         const salt = await bcrypt.genSalt(12)
         const hashedPassword = await bcrypt.hash(password, salt)
-
         const user = await User.create({
             username: username,
             email: email,
@@ -48,16 +44,14 @@ const user_create = async (req, res) => {
         })
         if (user) {
             res.status(201).json({
-                _id: user.id,
-                email: user.email,
-                password: user.password,
+                _id: user._id,
+                username: user.username,
                 isAdmin: user.isAdmin,
-                token: generateToken(user._id),
+                token: generateToken(user),
             })
         } else {
             res.status(400).json({ message: 'Invalid user data' })
         }
-
     } catch (err) { console.log(err); }
 }
 
@@ -135,17 +129,14 @@ const user_login = async (req, res) => {
 
     try {
         const userExist = await User.findOne({ email })
-        if (!userExist) return res.status(404).json({ message: "User dosn't exist." });
-
         const isPasswordCorrect = await bcrypt.compare(password, userExist.password)
-        if (!isPasswordCorrect) return res.status(400).json({ message: "Invalid credentials." });
-
+        if (!userExist && !isPasswordCorrect) return res.status(404).json({ message: "Please Right a correct credentials" })
         else {
             res.status(200).json({
-                _id: userExist.id,
-                email: userExist.email,
+                _id: userExist._id,
+                username: userExist.username,
                 isAdmin: userExist.isAdmin,
-                token: generateToken(userExist._id),
+                token: generateToken(userExist),
             })
         }
 

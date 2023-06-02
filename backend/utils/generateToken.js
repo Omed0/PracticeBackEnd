@@ -1,9 +1,14 @@
 const jwt = require("jsonwebtoken")
 
 // Generate JWT
-const generateToken = (id) => {
+const generateToken = (props) => {
     return jwt.sign(
-        { id },
+        {
+            _id: props._id,
+            author: props.username,
+            email: props.email,
+            isAdmin: props.isAdmin,
+        },
         process.env.JWT_SECRET,
         { expiresIn: '30d' }
     )

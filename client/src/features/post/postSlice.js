@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import { createPost, fetchPosts, specificPost, updatePost, deletePost } from "./postService";
 
 var initialState = {
@@ -64,9 +64,7 @@ const postSlice = createSlice({
 // create post
 export const createPostAction = (initialPost) => async (dispatch) => {
     try {
-        dispatch(postRequest());
-        const { data } = await createPost(initialPost);
-        dispatch(postSuccess(data));
+        await dispatch(createPost(initialPost))
     } catch (error) {
         dispatch(postFail(error.message));
     }
@@ -75,9 +73,7 @@ export const createPostAction = (initialPost) => async (dispatch) => {
 // fetch all posts
 export const fetchPostsAction = () => async (dispatch) => {
     try {
-        dispatch(postRequest());
-        const { data } = await fetchPosts();
-        dispatch(postSuccess(data));
+        await dispatch(fetchPosts());
     } catch (error) {
         dispatch(postFail(error.message));
     }

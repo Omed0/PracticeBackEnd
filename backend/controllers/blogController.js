@@ -6,7 +6,7 @@ const User = require('../models/user')
 const blog_index = async (req, res) => {
 
     try {
-        const blogs = await Blog.find({ user: req.user.id }).sort({ createdAt: -1 })
+        const blogs = await Blog.find().sort({ createdAt: -1 })
 
         if (!blogs) return res.status(400).json({ message: 'Your not authorized', redirect: '/auth' })
         res.status(200).json({ message: 'All Blogs Returned', blogs })
@@ -36,24 +36,35 @@ const blog_details = async (req, res) => {
 }
 
 
-const blog_create_post = async (req, res) => {
-    const blog = await Blog.create({
-        user: req.user.id,
-        title: req.body.title,
-        snippet: req.body.snippet,
-        body: req.body.body,
-    })
+const blog_create_post = async (req, res) => {س
+    const id = req.user.id;
+    const author = req.user.username;
+
+    if (!id || !author) {
+        return res.status(400).json({ message: 'Please create a user to see posts' });
+    }
+
+    const { title, snippet, body } = req.body;
+    if (!title || !snippet || !body) {
+        return res.status(400).json({ message: 'Please fill all the fields' });
+    }
 
     try {
-        if (!blog) {
-            res.status(400).json({ code: 400, message: 'create blog failed, no authorization' })
-        } else {
-            res.status(201).json({ code: 201, message: 'create blog successfully', blog, redirect: '/blogs' })
-        }
+        const blog = await Blog.create({
+            userId: id, // Assign id directly to the user field
+            author: author,
+            title,
+            snippet,
+            body,
+        });
+
+        if (blog) return res.status(201).json({ message: 'Blog Created', blog });
+        else return res.status(400).json({ message: 'Invalid Blog Data' });
     } catch (error) {
-        console.log(error)
+        console.log(error);
     }
-}
+};
+
 
 const blog_create_delete = async (req, res) => {
     const id = req.params.id
@@ -61,16 +72,16 @@ const blog_create_delete = async (req, res) => {
     const blog = await Blog.findById(id)
     const user = await User.findById(req?.user?.id)
 
+    if (!user) return res.status(400).json({ message: 'User Not Found' })
+
     try {
-        if (!user) {
-            res.status(400).json({ message: 'User Not Found' })
-        }
-        if (blog.user.toString() !== user?.id) {
+        if (blog.userId.toString() !== user?.id) {
             res.status(400).json({ message: 'Not Authorized' })
             throw new Error('Not Authorized')
+        } else {
+            await blog.remove()
+            res.json({ code: 204, message: 'delete successfully', redirect: '/blogs' })
         }
-        await blog.remove()
-        res.json({ code: 204, message: 'delete successfully', redirect: '/blogs' })
 
     } catch (error) {
         console.log(error)

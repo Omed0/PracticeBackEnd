@@ -1,12 +1,9 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit'
 import { login, register, fetchUsers, fetchUser, updateUser, deleteUser } from './authService'
 
 
-// get user from local storage
-const user = JSON.parse(localStorage.getItem('user'))
-
 const initialState = {
-    user: user ? user : null,
+    user: null,
     isError: false,
     isSuccess: false,
     isLoading: false,
@@ -36,7 +33,7 @@ export const authSlice = createSlice({
             state.isError = false
             state.isSuccess = false
             state.message = 'logout successfully'
-            localStorage.removeItem('user')
+            localStorage.clear()
         }
     },
     extraReducers(builder) {
@@ -76,9 +73,9 @@ export const authSlice = createSlice({
 // register user
 export const registerUser = (userData) => async (dispatch) => {
     try {
-        dispatch(userRequest())
         const { data } = await register(userData)
-        dispatch(userSuccess(data))
+        //set user in localstorage
+        localStorage.setItem('user', JSON.stringify(data))
     } catch (error) {
         dispatch(userFail(error.message))
     }
@@ -87,9 +84,9 @@ export const registerUser = (userData) => async (dispatch) => {
 // login user
 export const loginUser = (userData) => async (dispatch) => {
     try {
-        dispatch(userRequest())
         const { data } = await login(userData)
-        dispatch(userSuccess(data))
+        //set user in localstorage
+        localStorage.setItem('user', JSON.stringify(data))
     } catch (error) {
         dispatch(userFail(error.message))
     }
@@ -98,7 +95,7 @@ export const loginUser = (userData) => async (dispatch) => {
 // logout user
 export const logoutUser = () => async (dispatch) => {
     try {
-        return await dispatch(reset())
+        dispatch(reset())
     } catch (error) {
         dispatch(userFail(error.message))
     }
