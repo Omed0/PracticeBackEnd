@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { useSelector } from "react-redux";
 import { createPost, fetchPosts, specificPost, updatePost, deletePost } from "./postService";
 
-var initialState = {
+const initialState = {
     post: [],
     loading: false,
     error: null,
@@ -110,6 +111,17 @@ export const deletePostAction = (id) => async (dispatch) => {
     }
 };
 
+const selectAllPosts = (state) => state.post.post;
+const selectLoading = (state) => state.post.loading;
+const selectError = (state) => state.post.error;
+const selectSuccess = (state) => state.post.success;
+const selectMessage = (state) => state.post.message;
+
+export const getAllBlogs = useSelector(selectAllPosts);
+export const getLoading = useSelector(selectLoading);
+export const getError = useSelector(selectError);
+export const getSuccess = useSelector(selectSuccess);
+export const getMessage = useSelector(selectMessage);
 
 
 export const { postRequest, postSuccess, postFail, postReset } = postSlice.actions;

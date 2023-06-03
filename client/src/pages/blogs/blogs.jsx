@@ -1,26 +1,31 @@
 import { useState, useEffect } from "react";
 
 import { Link, Outlet } from "react-router-dom";
-import { fetchPostsAction } from "../../features/post/postSlice";
+import { fetchPostsAction, getAllBlogs } from "../../features/post/postSlice";
+import { useDispatch } from "react-redux";
+
 
 export default function blogs() {
+
   const [blogs, setBlogs] = useState([]);
+  const dispatch = useDispatch();
+
+  const fetchBlogs = async () => {
+    const { data } = await dispatch(fetchPostsAction());
+    setBlogs(data);
+  };
 
   useEffect(() => {
-    const fetchBlogs = async () => {
-      const { data } = await fetchPostsAction();
-      setBlogs(data);
-    };
 
     fetchBlogs();
-  }, [blogs, setBlogs]);
+  }, [dispatch]);
 
   return (
     <div className="blogs content">
       <h2>All Blogs</h2>
 
-      {blogs && blogs.length > 0 ?
-        blogs.map((blog) => (
+      {getAllBlogs && getAllBlogs.length > 0 ?
+        getAllBlogs.map((blog) => (
           <Link to={`/blogs/${blog._id}`} key={blog._id}>
             <div className="blog-preview">
               <h2>{blog.title}</h2>
