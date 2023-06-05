@@ -1,61 +1,60 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
 import { API } from "../../api/customAxios";
+import { getPostsRequest, getPostsSuccess, getPostsFail } from "./postsSlice";
 
 
 //===================== POSTS =====================//
-export const fetchPosts = createAsyncThunk("posts/fetchPosts", async () => {
+//create post
+export const createPost = (postData) => async (dispatch) => {
     try {
-        const response = await API.get(`/blogs`);
-        if (response?.status === 200) return response.data;
-        return `${response.status} : ${response.statusText}`;
-    }
-    catch (error) {
-        return error.message
-    }
-})
-
-export const createPost = createAsyncThunk("post/createPost", async (initialPost) => {
-    try {
-        const response = await API.post(`/blogs`, initialPost);
-        if (response?.status === 201) return response.data;
-        return `${response.status} : ${response.statusText}`;
+        dispatch(getPostsRequest())
+        const { data } = await API.post("/blogs", postData);
+        dispatch(getPostsSuccess(data))
     } catch (error) {
-        return error.message
+        dispatch(getPostsFail(error))
     }
-})
+}
+
+
+// fetch all posts
+export const fetchPosts = () => async (dispatch) => {
+    try {
+        dispatch(getPostsRequest())
+        const { data } = await API.get("/blogs");
+        dispatch(getPostsSuccess(data[1]))
+    } catch (error) {
+        dispatch(getPostsFail(error))
+    }
+}
 
 // fetch single post by id
-export const specificPost = createAsyncThunk("post/specificPost", async (initialPost) => {
-    const { id } = initialPost
+export const specificPost = (id) => async (dispatch) => {
     try {
-        const response = await API.get(`blogs/${id}`);
-        if (response?.status === 200) return response.data;
-        return `${response.status} : ${response.statusText}`;
+        dispatch(getPostsRequest())
+        const { data } = await API.get(`/blogs/${id}`);
+        dispatch(getPostsSuccess(data))
     } catch (error) {
-        return error.message
+        dispatch(getPostsFail(error))
     }
-})
+}
 
 // delete single post by id
-export const deletePost = createAsyncThunk("post/deletePost", async (initialPost) => {
-    const { id } = initialPost
+export const deletePost = (id) => async (dispatch) => {
     try {
-        const response = await API.delete(`blogs/${id}`);
-        if (response?.status === 200) return initialPost;
-        return `${response.status} : ${response.statusText}`;
+        dispatch(getPostsRequest())
+        const { data } = await API.delete(`/blogs/${id}`);
+        dispatch(getPostsSuccess(data))
     } catch (error) {
-        return error.message
+        dispatch(getPostsFail(error))
     }
-})
+}
 
 // update single post by id
-export const updatePost = createAsyncThunk("post/updatePost", async (initialPost) => {
-    const { id } = initialPost
+export const updatePost = (id, updatedPost) => async (dispatch) => {
     try {
-        const response = await API.patch(`blogs/${id}`, initialPost);
-        if (response?.status === 200) return response.data;
-        return `${response.status} : ${response.statusText}`;
+        dispatch(getPostsRequest())
+        const { data } = await API.patch(`/blogs/${id}`, updatedPost);
+        dispatch(getPostsSuccess(data))
     } catch (error) {
-        return error.message
+        dispatch(getPostsFail(error))
     }
-})
+}

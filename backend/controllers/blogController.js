@@ -8,8 +8,8 @@ const blog_index = async (req, res) => {
     try {
         const blogs = await Blog.find().sort({ createdAt: -1 })
 
-        if (!blogs) return res.status(400).json({ message: 'Your not authorized', redirect: '/auth' })
-        res.status(200).json({ message: 'All Blogs Returned', blogs })
+        if (!blogs) return res.status(400).json({ message: 'Your not authorized' })
+        res.status(200).json([message = 'get All blogs', blogs])
     } catch (error) {
         console.log(error)
     }
@@ -19,32 +19,28 @@ const blog_details = async (req, res) => {
     const id = req.params.id
 
     const blog = await Blog.findById(id)
-    const user = await User.findById(req.user.id)
 
     try {
-        if (!user) {
-            res.status(400).json({ message: 'Please create a user to see posts' })
-        }
-        if (blog.user.toString() !== user.id) {
-            res.status(400).json({ message: 'Not Authorized' })
+        if (!blog) {
+            res.status(400).json({ message: 'Posts not found' })
         }
 
-        res.status(200).json({ message: 'Blog Details', blog })
+        res.status(200).json([message = 'Blog Person by Id', blog])
     } catch (error) {
         console.log(error)
     }
 }
 
-
-const blog_create_post = async (req, res) => {س
-    const id = req.user.id;
-    const author = req.user.username;
-
-    if (!id || !author) {
-        return res.status(400).json({ message: 'Please create a user to see posts' });
-    }
+const blog_create_post = async (req, res) => {
 
     const { title, snippet, body } = req.body;
+    const { id, username } = req?.user;
+    const user = await User.findById(id)
+
+    if (user.user.toString() !== id) {
+        return res.status(400).json({ message: 'Please create a user to create post' });
+    }
+
     if (!title || !snippet || !body) {
         return res.status(400).json({ message: 'Please fill all the fields' });
     }
@@ -52,19 +48,18 @@ const blog_create_post = async (req, res) => {س
     try {
         const blog = await Blog.create({
             userId: id, // Assign id directly to the user field
-            author: author,
+            author: username,
             title,
             snippet,
             body,
         });
 
-        if (blog) return res.status(201).json({ message: 'Blog Created', blog });
+        if (blog) return res.status(201).json({ message: 'Blog Created' });
         else return res.status(400).json({ message: 'Invalid Blog Data' });
     } catch (error) {
         console.log(error);
     }
 };
-
 
 const blog_create_delete = async (req, res) => {
     const id = req.params.id
@@ -80,7 +75,7 @@ const blog_create_delete = async (req, res) => {
             throw new Error('Not Authorized')
         } else {
             await blog.remove()
-            res.json({ code: 204, message: 'delete successfully', redirect: '/blogs' })
+            res.status(204).json({ message: 'delete successfully' })
         }
 
     } catch (error) {
@@ -102,7 +97,7 @@ const blog_create_update = async (req, res) => {
             res.status(400).json({ message: 'Not Authorized' })
         }
         const updateBlog = await blog.updateOne({ _id: id, ...req.body })
-        res.status(200).json({ message: 'Blog Updated', updateBlog })
+        res.status(200).json([message = 'Blog Updated'])
 
     } catch (error) {
         console.log(error)
