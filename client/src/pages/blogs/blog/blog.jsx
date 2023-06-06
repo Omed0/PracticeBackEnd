@@ -1,39 +1,48 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { specificPost } from "../../../features/post/postService";
+import { loading, error, success, selectedPost } from "../../../features/post/postsSlice";
+
 import trashcan from '../../../assets/trashcan.svg'
 
 export default function blog() {
   const dispatch = useDispatch();
 
-  const trash = async () => {
-    console.log("blog id : " + blogs._id)
-    deletePost(blogs._id);
+  const trash = () => {
+    // console.log("blog id : " + blogs._id)
+    // deletePost(blogs._id);
   }
 
-  useEffect(() => {
-    const fetchBlogs = async () => {
-      dispatch(specificPost(data._id));
-      setBlogs(data);
-    };
 
-    fetchBlogs();
+  useEffect(() => {
+    dispatch(specificPost);
+
     trash();
   }, [dispatch, trash]);
 
   return (
     <div>
-      <section className="details content">
-        {/* <h2>{blog.title}</h2> */}
-        {/* <small>{blog.author}</small> */}
-        <div className="content">
-          {/* <p>{blog.body}</p> */}
-        </div>
-        <Link className="delete" onClick={trash}>
-          <img src={trashcan} alt='delete blog' />
-        </Link>
-      </section>
-
+      {
+        loading ? <div>Loading...</div>
+          :
+          error ? <div>Error: {error.message}</div>
+            :
+            (
+              success && selectedPost && selectedPost.length > 0 && selectedPost.map((post) => {
+                <section className="details content">
+                  <h2>{post.title}</h2>
+                  <small>{post.author}</small>
+                  <div className="content">
+                    <p>{post.body}</p>
+                  </div>
+                  <Link className="delete" onClick={trash}>
+                    <img src={trashcan} alt='delete blog' />
+                  </Link>
+                </section>
+              })
+            )
+      }
     </div>
   )
 }

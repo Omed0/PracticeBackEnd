@@ -1,5 +1,5 @@
 import { API } from "../../api/customAxios";
-import { getPostsRequest, getPostsSuccess, getPostsFail } from "./postsSlice";
+import { getPostsRequest, getPostsSuccess, getPostsFail, selectPost } from "./postsSlice";
 
 
 //===================== POSTS =====================//
@@ -31,7 +31,7 @@ export const specificPost = (id) => async (dispatch) => {
     try {
         dispatch(getPostsRequest())
         const { data } = await API.get(`/blogs/${id}`);
-        dispatch(getPostsSuccess(data))
+        dispatch(selectPost(data))
     } catch (error) {
         dispatch(getPostsFail(error))
     }
