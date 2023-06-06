@@ -6,6 +6,7 @@ const initialState = {
     loading: false,
     error: null,
     success: false,
+    selectedPost: [],
 };
 
 const postsSlice = createSlice({
@@ -19,6 +20,14 @@ const postsSlice = createSlice({
             state.loading = false;
             state.success = true;
             state.posts = Array.isArray(action.payload) ? [...action.payload] : [];
+
+            if (state.selectedPost) {
+                state.selectedPost = state.posts.find(post => post._id === state.selectedPost._id);
+            }
+        },
+        selectPost: (state, action) => {
+            const postId = action.payload._id;
+            state.selectedPost = state.posts.find(post => post._id === postId);
         },
         getPostsFail: (state, action) => {
             state.loading = false;
@@ -29,14 +38,13 @@ const postsSlice = createSlice({
             state.error = null;
             state.success = false;
             state.posts = [];
-
         },
     },
 });
 
-export const { posts, success, loading, error } = useSelector(state => state.posts);
+export const { posts, success, loading, error, selectedPost } = useSelector(state => state.posts);
 
-export const { getPostsRequest, getPostsSuccess, getPostsFail, getPostsReset } = postsSlice.actions;
+export const { getPostsRequest, getPostsSuccess, getPostsFail, getPostsReset, selectPost } = postsSlice.actions;
 
 export default postsSlice.reducer;
 
