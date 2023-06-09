@@ -1,12 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { useSelector } from "react-redux";
 
 const initialState = {
     posts: [],
     loading: false,
     error: null,
     success: false,
-    selectedPost: [],
+    selectedPost: null,
 };
 
 const postsSlice = createSlice({
@@ -20,14 +19,9 @@ const postsSlice = createSlice({
             state.loading = false;
             state.success = true;
             state.posts = Array.isArray(action.payload) ? [...action.payload] : [];
-
-            if (state.selectedPost) {
-                state.selectedPost = state.posts.find(post => post._id === state.selectedPost._id);
-            }
         },
-        selectPost: (state, action) => {
-            const postId = action.payload._id;
-            state.selectedPost = state.posts.find(post => post._id === postId);
+        getSelectPost: (state, action) => {
+            state.selectedPost = state.posts.find(post => post._id === action.payload._id);
         },
         getPostsFail: (state, action) => {
             state.loading = false;
@@ -38,13 +32,13 @@ const postsSlice = createSlice({
             state.error = null;
             state.success = false;
             state.posts = [];
+            state.selectedPost = null;
         },
     },
 });
 
-export const { posts, success, loading, error, selectedPost } = useSelector(state => state.posts);
 
-export const { getPostsRequest, getPostsSuccess, getPostsFail, getPostsReset, selectPost } = postsSlice.actions;
+export const { getPostsRequest, getPostsSuccess, getSelectPost, getPostsFail, getPostsReset } = postsSlice.actions;
 
 export default postsSlice.reducer;
 
