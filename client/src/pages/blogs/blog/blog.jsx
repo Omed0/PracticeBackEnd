@@ -1,24 +1,25 @@
 import { useEffect } from "react";
-import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { specificPost } from "../../../features/post/postService";
-import { loading, error, success, selectedPost } from "../../../features/post/postsSlice";
+import { Link, Navigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { deletePost, specificPost } from "../../../features/post/postService";
 
 import trashcan from '../../../assets/trashcan.svg'
 
 export default function blog() {
+  const { id } = useParams();
   const dispatch = useDispatch();
+  const { selectedPost, loading, error, success } = useSelector(state => state.posts);
 
   const trash = () => {
-    // console.log("blog id : " + blogs._id)
-    // deletePost(blogs._id);
+    console.log("blog id : " + selectedPost._id + "deleted")
+    deletePost(id)
+    Navigate("/blogs");
   }
 
 
   useEffect(() => {
-    dispatch(specificPost);
+    dispatch(specificPost(id));
 
-    trash();
   }, [dispatch, trash]);
 
   return (
@@ -29,8 +30,8 @@ export default function blog() {
           error ? <div>Error: {error.message}</div>
             :
             (
-              success && selectedPost && selectedPost.length > 0 && selectedPost.map((post) => {
-                <section className="details content">
+              success && selectedPost && selectedPost.length > 0 && selectedPost.map((post, index) => {
+                <section key={index} className="details content">
                   <h2>{post.title}</h2>
                   <small>{post.author}</small>
                   <div className="content">

@@ -1,18 +1,19 @@
 import { useEffect } from "react";
-
 import { Link, Outlet } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchPosts } from "../../features/post/postService";
-import { posts, loading, error, success } from "../../features/post/postsSlice";
+// import { posts, loading, error, success } from "../../features/post/postsSlice";
 
 
 export default function blogs() {
 
   const dispatch = useDispatch();
-  console.log(posts);
+  const { posts, loading, error, success } = useSelector(state => state.posts);
 
   useEffect(() => {
+
     dispatch(fetchPosts());
+
   }, [dispatch]);
 
   return (
