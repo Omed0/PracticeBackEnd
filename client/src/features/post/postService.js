@@ -1,12 +1,11 @@
 import { API } from "../../api/customAxios";
-import { getPostsRequest, getPostsSuccess, getPostsFail, getSelectPost } from "./postsSlice";
+import { getPostsSuccess, getPostsFail, getSelectPost, getPostReset } from "./postsSlice";
 
 
 //===================== POSTS =====================//
 //create post
 export const createPost = (postData) => async (dispatch) => {
     try {
-        dispatch(getPostsRequest())
         const { data } = await API.post("/blogs", postData);
         dispatch(getPostsSuccess(data))
     } catch (error) {
@@ -17,7 +16,6 @@ export const createPost = (postData) => async (dispatch) => {
 // fetch all posts
 export const fetchPosts = () => async (dispatch) => {
     try {
-        dispatch(getPostsRequest())
         const { data } = await API.get("/blogs");
         dispatch(getPostsSuccess(data[1]))
     } catch (error) {
@@ -28,9 +26,8 @@ export const fetchPosts = () => async (dispatch) => {
 // fetch single post by id
 export const specificPost = (id) => async (dispatch) => {
     try {
-        dispatch(getPostsRequest())
         const { data } = await API.get(`/blogs/${id}`);
-        dispatch(getSelectPost(data[1]))
+        dispatch(getSelectPost(data))
     } catch (error) {
         dispatch(getPostsFail(error))
     }
@@ -39,9 +36,9 @@ export const specificPost = (id) => async (dispatch) => {
 // delete single post by id
 export const deletePost = (id) => async (dispatch) => {
     try {
-        dispatch(getPostsRequest())
         const { data } = await API.delete(`/blogs/${id}`);
         dispatch(getPostsSuccess(data))
+        dispatch(getPostReset(data))
     } catch (error) {
         dispatch(getPostsFail(error))
     }
@@ -50,7 +47,6 @@ export const deletePost = (id) => async (dispatch) => {
 // update single post by id
 export const updatePost = (id, updatedPost) => async (dispatch) => {
     try {
-        dispatch(getPostsRequest())
         const { data } = await API.patch(`/blogs/${id}`, updatedPost);
         dispatch(getPostsSuccess(data))
     } catch (error) {

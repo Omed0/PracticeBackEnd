@@ -25,7 +25,7 @@ const blog_details = async (req, res) => {
             res.status(400).json({ message: 'Posts not found' })
         }
 
-        res.status(200).json([message = 'Blog Person by Id', blog])
+        res.status(200).json(blog)
     } catch (error) {
         console.log(error)
     }

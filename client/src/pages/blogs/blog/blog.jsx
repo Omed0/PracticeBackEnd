@@ -1,49 +1,57 @@
 import { useEffect } from "react";
-import { Link, Navigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { deletePost, specificPost } from "../../../features/post/postService";
+import { getPostReset } from "../../../features/post/postsSlice";
 
-import trashcan from '../../../assets/trashcan.svg'
+
 
 export default function blog() {
   const { id } = useParams();
+  const { selectedPost, error } = useSelector(state => state.posts);
   const dispatch = useDispatch();
-  const { selectedPost, loading, error, success } = useSelector(state => state.posts);
+  const Navigate = useNavigate();
 
   const trash = () => {
     console.log("blog id : " + selectedPost._id + "deleted")
-    deletePost(id)
+    deletePost(id) // you can delete post when you have credintials
     Navigate("/blogs");
   }
-
 
   useEffect(() => {
     dispatch(specificPost(id));
 
-  }, [dispatch, trash]);
+    return () => {
+      if (id) {
+        dispatch(getPostReset({ id }));
+      }
+    }
+
+  }, [dispatch, id]);
 
   return (
     <div>
       {
-        loading ? <div>Loading...</div>
+        error ? <div>Error: {error.message}</div>
           :
-          error ? <div>Error: {error.message}</div>
-            :
-            (
-              success && selectedPost && selectedPost.length > 0 && selectedPost.map((post, index) => {
-                <section key={index} className="details content">
-                  <h2>{post.title}</h2>
-                  <small>{post.author}</small>
-                  <div className="content">
-                    <p>{post.body}</p>
-                  </div>
-                  <Link className="delete" onClick={trash}>
-                    <img src={trashcan} alt='delete blog' />
-                  </Link>
-                </section>
-              })
-            )
+          (
+            selectedPost ?
+              <section key={selectedPost._id} className="p-4 bg-slate-500">
+                <h2>{selectedPost.title}</h2>
+                <small>{selectedPost.author}</small>
+                <div className="">
+                  <p>{selectedPost.body}</p>
+                  <small>{selectedPost.snippet}</small>
+                </div>
+                <Link className="delete" onClick={trash}>
+                  <img src={'/trashcan.svg'} alt='delete blog' />
+                </Link>
+              </section>
+              :
+              <div>no post by this id</div>
+
+          )
       }
-    </div>
+    </div >
   )
 }

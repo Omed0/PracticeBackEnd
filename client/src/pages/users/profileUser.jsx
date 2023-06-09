@@ -1,7 +1,5 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import trashcan from '../../assets/trashcan.svg'
-
 
 export default function profileUser() {
     const [user, setUser] = useState([{
@@ -12,13 +10,8 @@ export default function profileUser() {
     }]);
 
     const trash = () => {
-        const endpoint = `/blogs/${blog._id}`;
-        fetch(endpoint, {
-            method: "DELETE",
-        })
-            .then((response) => response.json())
-            .then((data) => (window.location.href = data.redirect))
-            .catch((err) => console.log(err));
+        console.log("user id : " + user._id + "deleted")
+        setUser([])
     }
 
     return (
@@ -34,7 +27,7 @@ export default function profileUser() {
                                     <p><b>password : </b>{user.password}</p>
                                 </div>
                                 <Link className="delete" onClick={trash}>
-                                    <img src={trashcan} alt="delete user" />
+                                    <img src={'/trashcan.svg'} alt="delete user" />
                                 </Link>
                             </div>
                         )
