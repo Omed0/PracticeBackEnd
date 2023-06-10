@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     posts: [],
     error: null,
-    selectedPost: null,
+    selectedPost: '',
 };
 
 const postsSlice = createSlice({
@@ -21,7 +21,7 @@ const postsSlice = createSlice({
         },
         getPostReset: (state, action) => {
             if (action.payload.id) {
-                state.selectedPost = null;
+                state.selectedPost = '';
             }
         },
     },

@@ -37,7 +37,7 @@ const blog_create_post = async (req, res) => {
     const { id, username } = req?.user;
     const user = await User.findById(id)
 
-    if (user.user.toString() !== id) {
+    if (user._id.toString() !== id) {
         return res.status(400).json({ message: 'Please create a user to create post' });
     }
 

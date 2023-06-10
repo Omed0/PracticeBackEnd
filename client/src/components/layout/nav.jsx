@@ -1,11 +1,15 @@
 import { NavLink } from 'react-router-dom'
+import { useSelector } from "react-redux";
 
 
 export default function nav() {
+
+    const { selectedPost } = useSelector(state => state.posts);
+
     return (
         <nav>
             <div className="site-title">
-                <NavLink to="/"><h1>Blog Omed</h1></NavLink>
+                <NavLink to="/"><h1>Blog {selectedPost.author}</h1></NavLink>
                 <p>Omed Site</p>
             </div>
             <ul>

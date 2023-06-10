@@ -1,68 +1,65 @@
 import { API } from '../../api/customAxios'
-import { createAsyncThunk } from '@reduxjs/toolkit'
-
+import { register, login, auth, logout, userFail } from '../auth/authSlice'
 
 //===================== AUTH =====================//
+
 //register user
-export const register = createAsyncThunk("auth/register", async (userData) => {
+export const RegisterUser = (userData) => async (dispatch) => {
     try {
-        const response = await API.post('/auth/signup', userData)
-        return response.data
+        const { data } = await API.post('/auth/signup', userData)
+        dispatch(register(data))
     } catch (error) {
-        return error.response.data.message
+        dispatch(getPostsFail(error))
     }
-})
+}
+
 //login user
-export const login = createAsyncThunk("auth/login", async (userData) => {
+export const LoginUser = (userData) => async (dispatch) => {
     try {
-        const response = await API.post('/auth/signin', userData)
-        return response.data
+        const { data } = await API.post('/auth/signin', userData)
+        dispatch(login(data))
     } catch (error) {
-        return error.response.data.message
+        dispatch(getPostsFail(error))
     }
-})
+}
 
 // ===================== users =====================//
-export const fetchUsers = createAsyncThunk("auth/fetchUsers", async () => {
+export const fetchUsers = () => async (dispatch) => {
     try {
-        const response = await API.get(`/auth`);
-        if (response?.status === 200) return response.data;
-        return `${response.status} : ${response.statusText}`;
+        const { data } = await API.get('/auth')
+        dispatch(getPostsSuccess(data))
+    } catch (error) {
+        dispatch(getPostsFail(error))
     }
-    catch (error) {
-        return error.message
-    }
-})
+}
+
 //fetch user by id in localstorage
-export const fetchUser = createAsyncThunk("auth/fetchUser", async () => {
-    const { id } = JSON.parse(localStorage.getItem('userInfo'))
+export const fetchUser = (id) => async (dispatch) => {
     try {
-        const response = await API.get(`/auth/${id}`)
-        if (id && response.status === 200) return response.data
-        return `${response.status} : ${response.statusText}`
+        const { data } = await API.get(`/auth/${id}`)
+        dispatch(getPostsSuccess(data))
     } catch (error) {
-        return error.response.data.message
+        dispatch(getPostsFail(error))
     }
-})
+}
 //dalete user by id in localstorage
-export const deleteUser = createAsyncThunk("auth/deleteUser", async () => {
+export const deleteUser = () => async (dispatch) => {
     const { id } = JSON.parse(localStorage.getItem('userInfo'))
     try {
-        const response = await API.delete(`/auth/${id}`)
-        if (id && response.status === 200) return response.data
-        return `${response.status} : ${response.statusText}`
+        const { data } = await API.delete(`/auth/${id}`)
+        dispatch(getPostsSuccess(data))
     } catch (error) {
-        return error.response.data.message
+        dispatch(getPostsFail(error))
     }
-})
+}
+
 //update user by id in localstorage
-export const updateUser = createAsyncThunk("auth/updateUser", async (userData) => {
+export const updateUser = () => async (dispatch) => {
     const { id } = JSON.parse(localStorage.getItem('userInfo'))
     try {
-        const response = await API.patch(`/auth/${id}`, userData)
-        if (id && response.status === 200) return response.data
-        return `${response.status} : ${response.statusText}`
+        const { data } = await API.put(`/auth/${id}`)
+        dispatch(getPostsSuccess(data))
     } catch (error) {
-        return error.response.data.message
+        dispatch(getPostsFail(error))
     }
-})
+}
