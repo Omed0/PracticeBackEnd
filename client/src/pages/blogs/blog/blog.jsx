@@ -36,16 +36,16 @@ export default function blog() {
           :
           (
             selectedPost ?
-              <section key={selectedPost._id} className="p-4 bg-slate-500">
-                <h2>{selectedPost.title}</h2>
-                <small>{selectedPost.author}</small>
-                <div className="">
-                  <p>{selectedPost.body}</p>
-                  <small>{selectedPost.snippet}</small>
+              <section key={selectedPost._id} className="details p-6 bg-zinc-700 text-white">
+                <h2 className="title">{selectedPost.title}</h2>
+                <small className="font-mono text-base text-zinc-400">{selectedPost.author}</small>
+                <div className="mt-4 mb-8">
+                  <p className="mb-6 text-white">{selectedPost.body}</p>
+                  <small className="border-2 p-2 border-red-500 shadow-md">{selectedPost.snippet}</small>
+                  <Link className="delete" onClick={trash}>
+                    <img src={'/trashcan.svg'} alt='delete blog' />
+                  </Link>
                 </div>
-                <Link className="delete" onClick={trash}>
-                  <img src={'/trashcan.svg'} alt='delete blog' />
-                </Link>
               </section>
               :
               <div>no post by this id</div>

@@ -28,7 +28,7 @@ export default function Create() {
 
   return (
     <div className="create-blog content">
-      <h2>Add a new blog</h2>
+      <h2 className="text-2xl font-bold">Add a new blog</h2>
       <form onSubmit={handleSubmit} action="/blogs" method="POST">
         <label htmlFor="title">Blog title:</label>
         <input type="text" id="title" value={fromData.title} name="title" onChange={handleChange} required />

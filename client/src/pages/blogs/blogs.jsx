@@ -16,21 +16,23 @@ export default function blogs() {
   }, [dispatch]);
 
   return (
-    <div className="blogs content">
-      <h2>All Blogs</h2>
-      {
-        error ? (<div>Error: {error.message}</div>)
-          :
-          (posts && posts.length > 0 && posts.map((post, index) => (
-            <Link to={`/blogs/${post._id}`} key={index}>
-              <div className="blog-preview">
-                <h2>{post.title}</h2>
-                <p>Written by {post.author}</p>
-              </div>
-              <small>{post.snippet}</small>
-            </Link>
-          )))
-      }
+    <div>
+      <h2 className="text-3xl font-bold">All Blogs</h2>
+      <section className="flex flex-wrap gap-5">
+        {
+          error ? (<div>Error: {error.message}</div>)
+            :
+            (posts && posts.length > 0 && posts.map((post, index) => (
+              <Link to={`/blogs/${post._id}`} className="min-w-[20rem] p-4 bg-zinc-700 shadow-lg" key={index}>
+                <div className="mb-2">
+                  <h2 className="text-xl title text-white">{post.title}</h2>
+                  <p className="text-sm text-white">Written by {post.author}</p>
+                </div>
+                <small className="p-1 bg-red-400 text-white">{post.snippet}</small>
+              </Link>
+            )))
+        }
+      </section>
       <Outlet />
     </div >
   )
