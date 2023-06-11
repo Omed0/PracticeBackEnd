@@ -1,14 +1,16 @@
-// import { Route, redirect as Redirect } from 'react-router-dom';
+// page PrivateRoute.jsx
 
-// const PrivateRoute = ({ component: Component, ...rest }) => {
-//     return <Route {...rest} component={(props) => {
-//         const { token } = JSON.parse(localStorage.getItem('userInfo'));
-//         if (token) {
-//             return <Component {...props} />
-//         } else {
-//             return <Redirect to={`/signin`} />
-//         }
-//     }} />
-// }
+import React from 'react';
+import { Route, Navigate } from 'react-router-dom';
 
-// export default PrivateRoute;
+export default function AuthorizedRoute({ component: Component, requiredRoles, redirect, ...rest }) {
+    const { token } = JSON.parse(localStorage.getItem('userInfo'));
+    const isAuthorized = token && requiredRoles.includes(token.role);
+
+    return (
+        <Route
+            {...rest}
+            element={isAuthorized ? <Component /> : <Navigate to={redirect} replace />}
+        />
+    );
+}
