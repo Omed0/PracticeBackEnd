@@ -44,9 +44,6 @@ const user_create = async (req, res) => {
         })
         if (user) {
             res.status(201).json({
-                _id: user._id,
-                username: user.username,
-                isAdmin: user.isAdmin,
                 token: generateToken(user),
             })
         } else {
@@ -133,9 +130,6 @@ const user_login = async (req, res) => {
         if (!userExist && !isPasswordCorrect) return res.status(404).json({ message: "Please Right a correct credentials" })
         else {
             res.status(200).json({
-                _id: userExist._id,
-                username: userExist.username,
-                isAdmin: userExist.isAdmin,
                 token: generateToken(userExist),
             })
         }
