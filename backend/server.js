@@ -27,12 +27,14 @@ app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }))
 app.use(morgan('dev'))
 
 const corsOptions = {
-    "Access-Control-Allow-Origin": "https://localhost:3000",
-    "optionsSuccessStatus": 200,
-    methode: ["GET", "POST", "PATCH", "DELETE", "PUT"],
+    origin: 'http://localhost:5173',
     credentials: true,
-}
-app.use(cors(corsOptions))
+    optionsSuccessStatus: 200,
+    methods: 'GET, POST, PUT, DELETE, PATCH',
+    allowedHeaders: 'Origin, Content-Type, Accept, Authorization',
+};
+
+app.use(cors(corsOptions));
 
 //routes
 

@@ -1,45 +1,39 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-    users: [],
     isError: false,
-    userCredintial: null,
+    userCredintial: [],
 }
 
 export const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        register: (state, { payload }) => {
-            const auth = state.userCredintial = payload
-            localStorage.setItem('userInfo', JSON.stringify(auth))
+        SignIn: (state, action) => {
+            state.userCredintial = [action.payload]
+            localStorage.setItem('userInfo', JSON.stringify(state.userCredintial))
         },
-        login: (state, { payload }) => {
-            const auth = state.userCredintial = payload
-            localStorage.setItem('userInfo', JSON.stringify(auth))
-        },
-        auth: (state) => {
+        Auth: (state) => {
             if (localStorage.getItem('userInfo')) {
                 const auth = JSON.parse(localStorage.getItem('userInfo'))
-                state.userCredintial = auth
+                state.userCredintial = [auth]
             } else {
                 state.isError = "You don't have Permission to access this page"
             }
         },
-        userSuccess: (state, { payload }) => {
-            state.users = Array.isArray(payload) ? [...payload] : [payload]
+
+        UserFail: (state, action) => {
+            state.userCredintial = ''
+            state.isError = action.payload
         },
-        userFail: (state, { payload }) => {
-            state.isError = payload
-        },
-        logout: (state) => {
-            state.users = []
+        Logout: (state) => {
             state.isError = false
+            state.userCredintial = []
             localStorage.removeItem('userInfo')
         }
     },
 })
 
-export const { register, login, auth, userFail, logout } = authSlice.actions
+export const { SignIn, Auth, UserFail, Logout } = authSlice.actions
 
 export default authSlice.reducer

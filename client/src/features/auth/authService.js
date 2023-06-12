@@ -1,25 +1,34 @@
 import { API } from '../../api/customAxios'
-import { register, login, auth, logout, userFail } from '../auth/authSlice'
+import { SignIn, UserFail } from '../auth/authSlice'
 
 //===================== AUTH =====================//
 
 //register user
 export const RegisterUser = (userData) => async (dispatch) => {
     try {
-        const { data } = await API.post('/auth/signup', userData)
-        dispatch(register(data))
+        const response = await API.post('/auth/signup', userData)
+        if (response.status === 200) {
+            console.log(response.data);
+            dispatch(SignIn(response.data))
+        } else {
+            dispatch(UserFail(response.data.message))
+        }
     } catch (error) {
-        dispatch(getPostsFail(error))
+        dispatch(UserFail(error))
     }
 }
 
 //login user
 export const LoginUser = (userData) => async (dispatch) => {
     try {
-        const { data } = await API.post('/auth/signin', userData)
-        dispatch(login(data))
+        const response = await API.post('/auth/signin', userData)
+        if (response.status === 200) {
+            dispatch(SignIn(response.data))
+        } else {
+            dispatch(UserFail(response.data.message))
+        }
     } catch (error) {
-        dispatch(getPostsFail(error))
+        dispatch(UserFail(error))
     }
 }
 
@@ -27,9 +36,9 @@ export const LoginUser = (userData) => async (dispatch) => {
 export const fetchUsers = () => async (dispatch) => {
     try {
         const { data } = await API.get('/auth')
-        dispatch(getPostsSuccess(data))
+        return data
     } catch (error) {
-        dispatch(getPostsFail(error))
+        dispatch(UserFail(error))
     }
 }
 
@@ -37,9 +46,9 @@ export const fetchUsers = () => async (dispatch) => {
 export const fetchUser = (id) => async (dispatch) => {
     try {
         const { data } = await API.get(`/auth/${id}`)
-        dispatch(getPostsSuccess(data))
+        return data
     } catch (error) {
-        dispatch(getPostsFail(error))
+        dispatch(UserFail(error))
     }
 }
 //dalete user by id in localstorage
@@ -47,9 +56,9 @@ export const deleteUser = () => async (dispatch) => {
     const { id } = JSON.parse(localStorage.getItem('userInfo'))
     try {
         const { data } = await API.delete(`/auth/${id}`)
-        dispatch(getPostsSuccess(data))
+        return data
     } catch (error) {
-        dispatch(getPostsFail(error))
+        dispatch(UserFail(error))
     }
 }
 
@@ -58,8 +67,8 @@ export const updateUser = () => async (dispatch) => {
     const { id } = JSON.parse(localStorage.getItem('userInfo'))
     try {
         const { data } = await API.put(`/auth/${id}`)
-        dispatch(getPostsSuccess(data))
+        dispatch(signIn(data))
     } catch (error) {
-        dispatch(getPostsFail(error))
+        dispatch(UserFail(error))
     }
 }
