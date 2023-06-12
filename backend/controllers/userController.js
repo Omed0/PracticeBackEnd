@@ -1,3 +1,4 @@
+
 const User = require('../models/user')
 const bcrypt = require('bcrypt')
 const { generateToken } = require('../utils/generateToken')
@@ -27,11 +28,16 @@ const user_create = async (req, res) => {
     if (userExist) {
         return res.status(400).json({ message: "User already exist." })
     }
-    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
-    if (!passwordRegex.test(password)) {
-        return res.status(400).json({ message: 'Invalid password format' });
-    }
-    // if (password !== confirmPassword) return res.status(400).json({ message: "Password don't match." });
+    // const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}/;
+    // const emailRegex = /\S+@\S+\.\S+/;
+
+    // if (!passwordRegex.test(password)) {
+    //     return res.status(400).json({ message: 'Invalid password format' });
+    // }
+    // // if (password !== confirmPassword) return res.status(400).json({ message: "Password don't match." });
+    // if (!emailRegex.test(email)) {
+    //     return res.status(400).json({ message: 'Invalid email format' });
+    // }
 
     try {
         const salt = await bcrypt.genSalt(12)
@@ -44,6 +50,9 @@ const user_create = async (req, res) => {
         })
         if (user) {
             res.status(201).json({
+                _id: user._id,
+                username: user.username,
+                isAdmin: user.isAdmin,
                 token: generateToken(user),
             })
         } else {
@@ -78,8 +87,6 @@ const user_id_delete = async (req, res) => {
         const deleteUser = await User.findByIdAndDelete(id)
         if (!deleteUser) return res.status(400).json({ message: 'User not found' });
         res.status(204).json({ code: 204, message: 'User delete successfully', deleteUser, redirect: '/auth' })
-
-            .catch(err => console.log(err))
     } catch (error) { console.log(error); }
 }
 
@@ -116,7 +123,6 @@ const user_id_update = async (req, res) => {
 }
 
 // Login Function
-
 const user_login = async (req, res) => {
 
     const { email, password } = req.body;
@@ -130,6 +136,9 @@ const user_login = async (req, res) => {
         if (!userExist && !isPasswordCorrect) return res.status(404).json({ message: "Please Right a correct credentials" })
         else {
             res.status(200).json({
+                _id: userExist._id,
+                username: userExist.username,
+                isAdmin: userExist.isAdmin,
                 token: generateToken(userExist),
             })
         }

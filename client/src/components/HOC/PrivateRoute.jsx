@@ -1,16 +1,18 @@
-// page PrivateRoute.jsx
+import { useLocation, Outlet, Navigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
-import React from 'react';
-import { Route, Navigate } from 'react-router-dom';
 
-export default function AuthorizedRoute({ component: Component, requiredRoles, redirect, ...rest }) {
-    const { token } = JSON.parse(localStorage.getItem('userInfo'));
-    const isAuthorized = token && requiredRoles.includes(token.role);
+export default function PrivateRoute({ allowedRole }) {
+
+    const { pathname } = useLocation()
+    const { userCredintial } = useSelector(state => state.auth)
+    console.log(userCredintial.find((role) => allowedRole.includes(role)));
 
     return (
-        <Route
-            {...rest}
-            element={isAuthorized ? <Component /> : <Navigate to={redirect} replace />}
-        />
-    );
+        userCredintial.find((role) => allowedRole.includes(role))
+            ? <Outlet />
+            : userCredintial
+                ? <Navigate to='/Home' state={{ from: pathname }} replace />
+                : <Navigate to='/auth' state={{ from: pathname }} replace />
+    )
 }

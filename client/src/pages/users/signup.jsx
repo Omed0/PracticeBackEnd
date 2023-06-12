@@ -1,16 +1,23 @@
 import { useState } from "react";
+import { useDispatch } from 'react-redux'
+import { useNavigate, Link, useLocation } from 'react-router-dom'
+import { LoginUser, RegisterUser } from "../../features/auth/authService";
 
 
-const initialState = { name: '', email: '', password: '', isAdmin: 'admin' }
+const initialState = { username: '', email: '', password: '', isAdmin: 'admin' }
 
 export default function signup() {
     const [formData, setFormData] = useState(initialState)
     const [isSignup, setIsSignup] = useState(false)
-    const [passwordError, setPasswordError] = useState('');
+    const [invalidData, setInvalidData] = useState('');
+
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+    const location = useLocation()
+    const from = location.state?.from.pathname || '/'
 
     const switchMode = () => {
         setIsSignup((prevIsSignup) => !prevIsSignup)
-        // setShowPassword(false)
     }
 
     const handleChange = (event) => {
@@ -20,18 +27,32 @@ export default function signup() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(formData);
 
-        const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{6,}$/;
-        if (!passwordRegex.test(formData.password)) {
-            setPasswordError('Invalid password format*');
-            return;
-        }
+        // if (isSignup && formData.password !== formData.confirmPassword) {
+        //     setInvalidData('Passwords do not match*');
+        //     return;
+        // }
+        // const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{6,}/;
+        // if (!passwordRegex.test(formData.password)) {
+        //     setInvalidData('Invalid password format*');
+        //     return;
+        // }
+
+        // const emailRegex = /\S+@\S+\.\S+/;
+        // if (!emailRegex.test(formData.email)) {
+        //     setInvalidData('Invalid email format*');
+        //     return;
+        // }
 
         try {
-            console.log(formData);
+            if (isSignup) {
+                dispatch(RegisterUser(formData))
+            } else {
+                dispatch(LoginUser(formData))
+            }
+            navigate(from, { replace: true })
             setFormData(initialState)
-            setPasswordError('');
+            setInvalidData('');
         } catch (error) {
             console.error(error);
         }
@@ -41,20 +62,19 @@ export default function signup() {
         <div className="register">
             <div>
                 <h2>{isSignup ? 'Sign Up' : 'Sign In'}</h2>
-
             </div>
-            <p style={{ color: "red" }} > {passwordError}</p>
+            <p style={{ color: "red" }} > {invalidData}</p>
             <form onSubmit={handleSubmit} className="form_create_user" method="POST">
                 {
                     isSignup && (
                         <>
-                            <label htmlFor="name">name</label>
+                            <label htmlFor="username">name</label>
                             <input
                                 onChange={handleChange}
                                 type="text"
-                                name="name"
-                                id="name"
-                                placeholder="name*"
+                                name="username"
+                                id="username"
+                                placeholder="username*"
                             />
                         </>
                     )
@@ -78,14 +98,14 @@ export default function signup() {
                 {
                     isSignup && (
                         <select value={formData.isAdmin} onChange={handleChange} name="isAdmin" id="isAdmin">
-                            <option name="admin" value="admin">admin</option>
-                            <option name="user" value="user">user</option>
+                            <option value="admin">admin</option>
+                            <option value="user">user</option>
                         </select>
                     )
                 }
-                <a style={{ padding: '6px 0', color: 'blue', cursor: 'pointer', textDecoration: 'underline' }} onClick={switchMode}>
-                    {isSignup ? 'you have an account' : 'you dont have an account'}
-                </a>
+                <Link to='#' style={{ padding: '6px 0', color: 'blue', cursor: 'pointer', textDecoration: 'underline' }} onClick={switchMode}>
+                    {isSignup ? 'you have an account' : 'you don\'t have an account'}
+                </Link>
                 <button type="submit" className="btn_create_user">{isSignup ? 'Submit' : 'Login'}</button>
             </form>
         </div >

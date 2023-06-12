@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "./server.js",
+  
   "scripts": {
     "start": "concurrently \"npm run server\" \"cd ../client && npm run dev\"",
     "server": "nodemon server.js"
