@@ -1,9 +1,10 @@
 import { API } from '../api/customAxios'
 
+const auth = JSON.parse(localStorage.getItem('userInfo'));
 
 API.interceptors.request.use((req) => {
-    if (JSON.parse(localStorage.getItem('user')).token) {
-        req.headers.Authorization = `Bearer ${JSON.parse(localStorage.getItem('user')).token}`
+    if (auth[0].token) {
+        req.headers.Authorization = `Bearer ${auth[0].token}`
     }
     return req;
 })
