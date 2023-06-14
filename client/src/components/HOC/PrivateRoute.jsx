@@ -5,6 +5,8 @@ export default function PrivateRoute({ allowedRole }) {
 
     const { pathname } = useLocation()
     const { userCredintial } = useSelector(state => state.auth)
+    // const auth = JSON.parse(localStorage.getItem('userInfo'));
+    // console.log(auth.token);
 
     return (
         allowedRole.includes(userCredintial.isAdmin)

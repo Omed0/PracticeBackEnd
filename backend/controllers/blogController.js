@@ -2,8 +2,7 @@ const Blog = require('../models/blog')
 const User = require('../models/user')
 
 
-
-const blog_index = async (req, res) => {
+const get_all_blogs = async (req, res) => {
 
     try {
         const blogs = await Blog.find().sort({ createdAt: -1 })
@@ -15,7 +14,7 @@ const blog_index = async (req, res) => {
     }
 }
 
-const blog_details = async (req, res) => {
+const get_blog_id = async (req, res) => {
     const id = req.params.id
 
     const blog = await Blog.findById(id)
@@ -31,13 +30,13 @@ const blog_details = async (req, res) => {
     }
 }
 
-const blog_create_post = async (req, res) => {
+const blog_create = async (req, res) => {
 
     const { title, snippet, body } = req.body;
-    const { id, username } = req?.user;
-    const user = await User.findById(id)
+    const { _id, username } = req.user;
+    const user = await User.findById(_id)
 
-    if (user._id.toString() !== id) {
+    if (user._id.toString() !== _id) {
         return res.status(400).json({ message: 'Please create a user to create post' });
     }
 
@@ -47,7 +46,7 @@ const blog_create_post = async (req, res) => {
 
     try {
         const blog = await Blog.create({
-            userId: id, // Assign id directly to the user field
+            userId: _id, // Assign id directly to the user field
             author: username,
             title,
             snippet,
@@ -61,29 +60,7 @@ const blog_create_post = async (req, res) => {
     }
 };
 
-const blog_create_delete = async (req, res) => {
-    const id = req.params.id
-
-    const blog = await Blog.findById(id)
-    const user = await User.findById(req?.user?.id)
-
-    if (!user) return res.status(400).json({ message: 'User Not Found' })
-
-    try {
-        if (blog.userId.toString() !== user?.id) {
-            res.status(400).json({ message: 'Not Authorized' })
-            throw new Error('Not Authorized')
-        } else {
-            await blog.remove()
-            res.status(204).json({ message: 'delete successfully' })
-        }
-
-    } catch (error) {
-        console.log(error)
-    }
-}
-
-const blog_create_update = async (req, res) => {
+const blog_update_id = async (req, res) => {
     const id = req.params.id
 
     const blog = await Blog.findById(id)
@@ -105,12 +82,33 @@ const blog_create_update = async (req, res) => {
 
 }
 
+const blog_delete_id = async (req, res) => {
+    const id = req.params.id
+
+    const blog = await Blog.findById(id)
+    const user = await User.findById(req?.user?.id)
+
+    if (!user) return res.status(400).json({ message: 'User Not Found' })
+
+    try {
+        if (blog.userId.toString() !== user?.id) {
+            res.status(400).json({ message: 'Not Authorized' })
+            throw new Error('Not Authorized')
+        } else {
+            await blog.remove()
+            res.status(204).json({ message: 'delete successfully' })
+        }
+
+    } catch (error) {
+        console.log(error)
+    }
+}
 
 
 module.exports = {
-    blog_index,
-    blog_details,
-    blog_create_post,
-    blog_create_update,
-    blog_create_delete,
+    get_all_blogs,
+    get_blog_id,
+    blog_create,
+    blog_delete_id,
+    blog_update_id,
 }
