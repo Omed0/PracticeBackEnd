@@ -4,23 +4,17 @@ const blogController = require('../controllers/blogController')
 const { protect } = require('../middleware/authMiddleware')
 
 
+router.use(protect)
+
 //blog routes
 router.route('/')
-    .post(protect, blogController.blog_create_post)
-    .get(blogController.blog_index)
+    .get(blogController.get_all_blogs)
+    .post(protect, blogController.blog_create)
 
 router.route('/:id')
-    .get(blogController.blog_details)
-    .delete(protect, blogController.blog_create_delete)
-    .patch(protect, blogController.blog_create_update)
-
-
-// const users = [{ name: 'omed' }, { name: 'asi' }]
-// router.param('id', (req, res, next, id) => {
-//     console.log('id is: ', id)
-//     req.user = users[id]
-//     next()
-// })
+    .get(blogController.get_blog_id)
+    .patch(protect, blogController.blog_update_id)
+    .delete(protect, blogController.blog_create)
 
 
 module.exports = router;

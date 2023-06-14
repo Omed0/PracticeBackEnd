@@ -23,8 +23,8 @@ import {
 } from 'react-router-dom'
 
 const Role = {
-  'user': "user",
-  'admin': "admin",
+  'user': 'user',
+  'admin': 'admin',
 }
 
 

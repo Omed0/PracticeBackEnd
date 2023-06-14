@@ -10,20 +10,19 @@ export const authSlice = createSlice({
     initialState,
     reducers: {
         SignIn: (state, action) => {
-            state.userCredintial = [action.payload]
+            state.userCredintial = Array.isArray(action.payload) ? action.payload[0] : action.payload
             localStorage.setItem('userInfo', JSON.stringify(state.userCredintial))
         },
         Auth: (state) => {
             if (localStorage.getItem('userInfo')) {
                 const auth = JSON.parse(localStorage.getItem('userInfo'))
-                state.userCredintial = [auth]
+                state.userCredintial = auth
             } else {
                 state.isError = "You don't have Permission to access this page"
             }
         },
-
-        UserFail: (state, action) => {
-            state.userCredintial = ''
+        AuthApiFail: (state, action) => {
+            state.userCredintial = []
             state.isError = action.payload
         },
         Logout: (state) => {
@@ -34,6 +33,6 @@ export const authSlice = createSlice({
     },
 })
 
-export const { SignIn, Auth, UserFail, Logout } = authSlice.actions
+export const { SignIn, Auth, AuthApiFail, Logout } = authSlice.actions
 
 export default authSlice.reducer

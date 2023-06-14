@@ -5,8 +5,7 @@ const generateToken = (props) => {
     return jwt.sign(
         {
             _id: props._id,
-            author: props.username,
-            email: props.email,
+            username: props.username,
             isAdmin: props.isAdmin,
         },
         process.env.JWT_SECRET,
