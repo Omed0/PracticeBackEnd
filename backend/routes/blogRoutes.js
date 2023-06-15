@@ -4,8 +4,6 @@ const blogController = require('../controllers/blogController')
 const { protect } = require('../middleware/authMiddleware')
 
 
-router.use(protect)
-
 //blog routes
 router.route('/')
     .get(blogController.get_all_blogs)

@@ -28,11 +28,12 @@ const protect = async (req, res, next) => {
 
     try {
         const decode = await verifyToken(token);
+        const normalUserToken = decode?.isAdmin !== 'admin' ? 'user' : '';
 
         req.user = await User.findOne({
             _id: decode._id,
             username: decode.username,
-            isAdmin: decode.isAdmin,
+            isAdmin: normalUserToken,
         }).select('-password');
 
         next();

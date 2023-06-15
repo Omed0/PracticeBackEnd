@@ -5,7 +5,7 @@ const initialState = {
     isError: false,
     isLoading: false,
     users: [],
-    currentUser: [],
+    currentUser: '',
 }
 
 export const authSlice = createSlice({
@@ -15,13 +15,15 @@ export const authSlice = createSlice({
     },
     extraReducers: (builder) => {
 
-        builder  //get All Users
-            .addCase(fetchUsers.pending, (state) => {
+        builder  //loading state 
+            .addCase(fetchUsers.pending || fetchUser.pending || updateUser.pending || deleteUser.pending, (state) => {
                 state.isLoading = true
             })
+
+        builder  //get All Users
             .addCase(fetchUsers.fulfilled, (state, action) => {
                 state.isLoading = false
-                state.users = action.payload
+                state.users = [...action.payload]
             })
             .addCase(fetchUsers.rejected, (state, action) => {
                 state.isLoading = false
@@ -29,25 +31,21 @@ export const authSlice = createSlice({
             })
 
         builder  //get Current User
-            .addCase(fetchUser.pending, (state) => {
-                state.isLoading = true
-            })
             .addCase(fetchUser.fulfilled, (state, action) => {
                 state.isLoading = false
                 state.currentUser = action.payload
             })
             .addCase(fetchUser.rejected, (state, action) => {
                 state.isLoading = false
+                state.currentUser = ''
                 state.isError = action.payload
             })
 
         builder //update User
-            .addCase(updateUser.pending, (state) => {
-                state.isLoading = true
-            })
             .addCase(updateUser.fulfilled, (state, action) => {
                 state.isLoading = false
-                state.currentUser = action.payload
+                state.currentUser = { ...state.currentUser, ...action.payload }
+
             })
             .addCase(updateUser.rejected, (state, action) => {
                 state.isLoading = false
@@ -55,12 +53,9 @@ export const authSlice = createSlice({
             })
 
         builder //delete User
-            .addCase(deleteUser.pending, (state) => {
-                state.isLoading = true
-            })
             .addCase(deleteUser.fulfilled, (state, action) => {
                 state.isLoading = false
-                state.currentUser = []
+                state.currentUser = ''
             })
             .addCase(deleteUser.rejected, (state, action) => {
                 state.isLoading = false
@@ -69,6 +64,6 @@ export const authSlice = createSlice({
     }
 })
 
-
+export const { currentUser, users, isLoading, isError } = (state) => state.auth
 
 export default authSlice.reducer

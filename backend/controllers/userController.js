@@ -7,8 +7,6 @@ const get_all_users = async (req, res) => {
         const allUser = await User.find().sort({ createdAt: -1 }) // find all blogs and sort by created date reverse order
         res.status(200).json({ message: 'all users returned', allUser })
 
-        console.log(allUser);  // log the user
-
     } catch (error) {
         console.log(error)
     }
@@ -64,14 +62,19 @@ const user_update_id = async (req, res) => {
 
 
 const user_delete_id = async (req, res) => {
-    const id = req.params.id
+    const deleteId = req.params.id
+    const { isAdmin } = req.user
+    const deleteUser = await User.findByIdAndDelete(deleteId)
+
+    if (!deleteUser) return res.status(400).json({ message: 'User not found' });
+
+    const admin = isAdmin === 'admin' ? true : false
+    if (!admin) return res.status(400).json({ message: 'You need Permission Admin for delete user' })
 
     try {
-        const deleteUser = await User.findByIdAndDelete(id)
-        if (!deleteUser) return res.status(400).json({ message: 'User not found' });
-        res.status(204).json({ code: 204, message: 'User delete successfully', deleteUser })
+        if (admin) res.status(200).json({ message: 'User deleted successfully', deleteUser })
     } catch (error) {
-        console.log(error);
+        return res.status(400).json({ message: 'User not deleted, broken' })
     }
 }
 

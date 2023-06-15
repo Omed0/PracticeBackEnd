@@ -29,7 +29,7 @@ app.use(morgan('dev'))
 
 const corsOptions = {
     origin: 'http://localhost:5173',
-    Credentials: true,
+    credentials: true,
     optionsSuccessStatus: 200,
     methods: 'GET, POST, PUT, DELETE, PATCH',
     allowedHeaders: 'Content-Type, Authorization, Origin, X-Requested-With, Accept'
@@ -39,9 +39,9 @@ app.use(cors(corsOptions));
 
 //routes
 
-app.use('/api/blog', blogRoute);
 app.use('/api/auth', authRoute);
 app.use('/api/user', userRoute);
+app.use('/api/blog', blogRoute);
 
 
 //404 page
