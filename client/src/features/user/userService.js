@@ -1,6 +1,7 @@
 import { API } from '../../api/customAxios'
 import { createAsyncThunk } from '@reduxjs/toolkit'
-
+import { useSelector } from 'react-redux'
+import { currentUser } from './userSlice'
 
 // ===================== users =====================//
 export const fetchUsers = createAsyncThunk(
@@ -14,11 +15,10 @@ export const fetchUsers = createAsyncThunk(
         }
     })
 
-//fetch user by id in localstorage
+// ===================== user =====================//
 export const fetchUser = createAsyncThunk(
     'users/fetchUser',
-    async () => {
-        const { id } = JSON.parse(localStorage.getItem('userInfo'))
+    async (id) => {
         try {
             const { data } = await API.get(`/auth/${id}`)
             return data
@@ -27,26 +27,28 @@ export const fetchUser = createAsyncThunk(
         }
     })
 
-//dalete user by id in localstorage
-export const deleteUser = createAsyncThunk(
-    'users/deleteUser',
-    async () => {
-        const { id } = JSON.parse(localStorage.getItem('userInfo'))
+// ===================== update user =====================//
+export const updateUser = createAsyncThunk(
+    'users/updateUser',
+    async (id, user) => {
+        const { _id } = useSelector(currentUser)
+        if (_id !== id) return { message: 'you can not update this user' }
         try {
-            const { data } = await API.delete(`/auth/${id}`)
+            const { data } = await API.patch(`/auth/${id}`, user)
             return data
         } catch (error) {
-            return error
+            return { message: 'you can not update this user', error }
         }
     })
 
-//update user by id in localstorage
-export const updateUser = createAsyncThunk(
-    'users/updateUser',
-    async (user) => {
-        const { id } = JSON.parse(localStorage.getItem('userInfo'))
+// ===================== delete user =====================//
+export const deleteUser = createAsyncThunk(
+    'users/deleteUser',
+    async (id) => {
+        const { _id } = useSelector(currentUser)
+        if (_id !== id) return { message: 'you can not delete this user' }
         try {
-            const { data } = await API.patch(`/auth/${id}`, user)
+            const { data } = await API.delete(`/auth/${id}`)
             return data
         } catch (error) {
             return error

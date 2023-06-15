@@ -1,13 +1,12 @@
 import { API } from "../../api/customAxios";
-import { getPostsSuccess, getPostsFail, getSelectPost, getPostReset } from "./postsSlice";
-
+import { getAllPosts, getPostsFail, getCurrentPost } from "./postsSlice";
 
 //===================== POSTS =====================//
 //create post
 export const createPost = (postData) => async (dispatch) => {
     try {
-        const { data } = await API.post("/blogs", postData);
-        dispatch(getPostsSuccess(data))
+        const { data } = await API.post("/blog", postData);
+        return data.message;
     } catch (error) {
         dispatch(getPostsFail(error))
     }
@@ -16,8 +15,9 @@ export const createPost = (postData) => async (dispatch) => {
 // fetch all posts
 export const fetchPosts = () => async (dispatch) => {
     try {
-        const { data } = await API.get("/blogs");
-        dispatch(getPostsSuccess(data[1]))
+        const { data } = await API.get("/blog");
+        dispatch(getAllPosts(data))
+        return data.message;
     } catch (error) {
         dispatch(getPostsFail(error))
     }
@@ -26,29 +26,28 @@ export const fetchPosts = () => async (dispatch) => {
 // fetch single post by id
 export const specificPost = (id) => async (dispatch) => {
     try {
-        const { data } = await API.get(`/blogs/${id}`);
-        dispatch(getSelectPost(data))
-    } catch (error) {
-        dispatch(getPostsFail(error))
-    }
-}
-
-// delete single post by id
-export const deletePost = (id) => async (dispatch) => {
-    try {
-        const { data } = await API.delete(`/blogs/${id}`);
-        dispatch(getPostsSuccess(data))
-        dispatch(getPostReset(data))
+        const { data } = await API.get(`/blog/${id}`);
+        dispatch(getCurrentPost(data))
     } catch (error) {
         dispatch(getPostsFail(error))
     }
 }
 
 // update single post by id
-export const updatePost = (id, updatedPost) => async (dispatch) => {
+export const updateBlog = (id, updatedPost) => async (dispatch) => {
     try {
-        const { data } = await API.patch(`/blogs/${id}`, updatedPost);
-        dispatch(getPostsSuccess(data))
+        const { data } = await API.patch(`/blog/${id}`, updatedPost);
+        return data.message;
+    } catch (error) {
+        dispatch(getPostsFail(error))
+    }
+}
+
+// delete single post by id
+export const deleteBlog = (id) => async (dispatch) => {
+    try {
+        const { data } = await API.delete(`/blog/${id}`);
+        return data.message;
     } catch (error) {
         dispatch(getPostsFail(error))
     }

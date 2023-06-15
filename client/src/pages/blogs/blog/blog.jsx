@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { deletePost, specificPost } from "../../../features/post/postService";
-import { getPostReset } from "../../../features/post/postsSlice";
+import { specificPost } from "../../../features/post/postService";
+import { getPostReset, deletePost } from "../../../features/post/postsSlice";
 import { motion } from 'framer-motion'
 
 

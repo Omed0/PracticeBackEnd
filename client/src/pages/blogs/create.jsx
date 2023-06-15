@@ -1,4 +1,4 @@
-import { useDispatch } from "react-redux"
+// import { useDispatch } from "react-redux"
 import { createPost } from "../../features/post/postService"
 import { useNavigate } from "react-router-dom"
 import { useState } from "react"
@@ -9,8 +9,8 @@ const initialState = { title: '', snippet: '', body: '' }
 export default function Create() {
 
   const [fromData, setFormData] = useState(initialState)
-  const dispatch = useDispatch()
-  const Navigate = useNavigate()
+  // const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const handleChange = (e) => {
     let { name, value } = e.target
@@ -20,9 +20,9 @@ export default function Create() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    dispatch(createPost(fromData))
+    const response = createPost(fromData)
     setFormData(initialState)
-    Navigate("/blogs")
+    response ? navigate('/blogs') : navigate('blogs/create')
   }
 
 

@@ -72,7 +72,7 @@ const login_user = async (req, res) => {
 
     } catch (error) {
         console.log(error)
-        throw (error)
+        throw Error(error)
     }
 }
 
