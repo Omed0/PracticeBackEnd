@@ -27,28 +27,11 @@ export default function signup() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
-        // if (isSignup && formData.password !== formData.confirmPassword) {
-        //     setInvalidData('Passwords do not match*');
-        //     return;
-        // }
-        // const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{6,}/;
-        // if (!passwordRegex.test(formData.password)) {
-        //     setInvalidData('Invalid password format*');
-        //     return;
-        // }
-
-        // const emailRegex = /\S+@\S+\.\S+/;
-        // if (!emailRegex.test(formData.email)) {
-        //     setInvalidData('Invalid email format*');
-        //     return;
-        // }
-
         try {
-            if (isSignup) {
-                dispatch(RegisterUser(formData))
-            } else {
+            if (!isSignup) {
                 dispatch(LoginUser(formData))
+            } else {
+                dispatch(RegisterUser(formData))
             }
             navigate(from, { replace: true })
             setFormData(initialState)

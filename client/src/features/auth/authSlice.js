@@ -10,11 +10,14 @@ export const authSlice = createSlice({
     initialState,
     reducers: {
         SignIn: (state, action) => {
-            state.userCredintial = Array.isArray(action.payload) ? action.payload[0] : action.payload
+            state.isError = false
+            console.log("userCredintial: " + action.payload);
+            state.userCredintial = action.payload
             localStorage.setItem('userInfo', JSON.stringify(state.userCredintial))
         },
         Auth: (state) => {
             if (localStorage.getItem('userInfo')) {
+                console.log("auth: " + action.payload);
                 const auth = JSON.parse(localStorage.getItem('userInfo'))
                 state.userCredintial = auth
             } else {

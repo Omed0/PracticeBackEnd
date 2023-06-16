@@ -1,34 +1,30 @@
-import { API } from '../../api/customAxios'
 import { SignIn, AuthApiFail } from './authSlice'
+import * as api from '../../api/index'
 
 //===================== AUTH =====================//
 
 //register user
 export const RegisterUser = (userData) => async (dispatch) => {
     try {
-        const response = await API.post('/auth/signup', userData)
-        if (response.status === 200) {
-            console.log(response.data);
+        const response = await api.signUp(userData)
+        if (response.status === 201) {
             dispatch(SignIn(response.data))
-        } else {
-            dispatch(AuthApiFail(response.data.message))
         }
+        return response.status
     } catch (error) {
-        dispatch(AuthApiFail(error))
+        dispatch(AuthApiFail(error.message))
     }
 }
 
 //login user
 export const LoginUser = (userData) => async (dispatch) => {
     try {
-        const response = await API.post('/auth/signin', userData)
+        const response = await api.signIn(userData)
         if (response.status === 200) {
-            console.log(response.data);
             dispatch(SignIn(response.data))
-        } else {
-            dispatch(AuthApiFail(response.data.message))
         }
+        return response.status
     } catch (error) {
-        dispatch(AuthApiFail(error))
+        dispatch(AuthApiFail(error.message))
     }
 }

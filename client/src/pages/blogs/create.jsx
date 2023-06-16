@@ -1,5 +1,5 @@
-// import { useDispatch } from "react-redux"
-import { createPost } from "../../features/post/postService"
+import { createNewPost } from "../../features/post/postService"
+import { useDispatch } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import { useState } from "react"
 
@@ -9,7 +9,7 @@ const initialState = { title: '', snippet: '', body: '' }
 export default function Create() {
 
   const [fromData, setFormData] = useState(initialState)
-  // const dispatch = useDispatch()
+  const dispatch = useDispatch()
   const navigate = useNavigate()
 
   const handleChange = (e) => {
@@ -17,19 +17,17 @@ export default function Create() {
     setFormData({ ...fromData, [name]: value })
   }
 
-
   const handleSubmit = (e) => {
     e.preventDefault()
-    const response = createPost(fromData)
+    dispatch(createNewPost(fromData))
     setFormData(initialState)
-    response ? navigate('/blogs') : navigate('blogs/create')
+    navigate('/blogs')
   }
-
 
   return (
     <div className="create-blog content">
       <h2 className="text-2xl font-bold">Add a new blog</h2>
-      <form onSubmit={handleSubmit} action="/blogs" method="POST">
+      <form onSubmit={handleSubmit} method="POST">
         <label htmlFor="title">Blog title:</label>
         <input type="text" id="title" value={fromData.title} name="title" onChange={handleChange} required />
         <label htmlFor="snippet">Blog snippet:</label>

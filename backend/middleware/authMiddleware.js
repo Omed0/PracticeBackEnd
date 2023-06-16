@@ -28,18 +28,17 @@ const protect = async (req, res, next) => {
 
     try {
         const decode = await verifyToken(token);
-        const normalUserToken = decode?.isAdmin !== 'admin' ? 'user' : '';
 
         req.user = await User.findOne({
             _id: decode._id,
-            username: decode.username,
-            isAdmin: normalUserToken,
         }).select('-password');
 
-        next();
+        if (req.user.isAdmin === 'user' || 'admin') next();
+        else return res.status(401).json({ message: 'Not authorized' });
+
     } catch (error) {
         console.log(error);
-        return res.status(401).json({ message: 'Not authorized' });
+        throw new Error('Not authorized, token failed');
     }
 };
 
@@ -48,18 +47,17 @@ const isAdmin = async (req, res, next) => {
 
     try {
         const decode = await verifyToken(token);
-        const adminToken = decode?.isAdmin === 'admin' ? 'admin' : '';
 
         req.user = await User.findOne({
             _id: decode._id,
-            username: decode.username,
-            isAdmin: adminToken,
         }).select('-password');
 
-        next();
+        if (req.user.isAdmin === 'admin') next();
+        else return res.status(403).json({ message: "You Don't Have Permission, Forbiden" });
+
     } catch (error) {
         console.log(error);
-        return res.status(403).json({ message: "You Don't Have Permission, Forbiden" });
+        throw new Error('Not authorized, token failed');
     }
 };
 
