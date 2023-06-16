@@ -21,9 +21,9 @@ const get_blog_id = async (req, res) => {
 
     try {
         if (!blog) {
-            res.status(400).json({ message: 'Posts not found' })
+            res.status(400).json({ message: 'Post not found' })
         }
-        res.status(200).json(blog)
+        res.status(200).json({ message: 'get blog by id', blog })
     } catch (error) {
         console.log(error)
     }
@@ -32,25 +32,25 @@ const get_blog_id = async (req, res) => {
 const blog_create = async (req, res) => {
 
     const { title, snippet, body } = req.body;
-    const { _id, username } = req.user;
+    const { _id } = req.user;
     const user = await User.findById(_id)
 
-    if (user) return res.status(400).json({ message: 'Create user for creating post' })
+    if (!user) return res.status(400).json({ message: 'Create user for creating post' })
 
-    if (user._id.toString() !== _id) return res.status(400).json({ message: "You'r not authorized for creat post " });
+    if (!user._id.equals(_id)) return res.status(401).json({ message: "You'r not authorized for creat post " });
 
     if (!title || !snippet || !body) return res.status(400).json({ message: 'Please fill all the fields' });
 
     try {
         const blog = await Blog.create({
             userId: _id, // Assign id directly to the user field
-            author: username,
+            author: user.username,
             title,
             snippet,
             body,
         });
 
-        if (blog) return res.status(201).json({ message: 'Blog Created' });
+        if (blog) return res.status(201).json({ message: 'Blog Created', blog });
         else return res.status(400).json({ message: 'Invalid Blog Data' });
     } catch (error) {
         console.log(error);
@@ -66,11 +66,11 @@ const blog_update_id = async (req, res) => {
     if (!user) return res.status(400).json({ message: 'User Not Found' })
     if (!blog) return res.status(400).json({ message: 'Blog not found' })
 
-    if (blog.userId.toString() !== user._id) return res.status(400).json({ message: 'Not Authorized for update blog' })
+    if (!blog.userId.equals(user._id)) return res.status(401).json({ message: 'Not Authorized for update blog' })
 
     try {
-        await blog.updateOne({ _id: id, ...req.body })
-        res.status(200).json({ message: 'Blog Updated' })
+        const updateBlog = await blog.updateOne({ _id: id, ...req.body })
+        res.status(200).json({ message: 'Blog Updated', updateBlog })
 
     } catch (error) {
         console.log(error)
@@ -87,12 +87,12 @@ const blog_delete_id = async (req, res) => {
     if (!user) return res.status(400).json({ message: 'User Not Found' })
 
     try {
-        if (blog.userId.toString() !== user?._id) {
-            res.status(400).json({ message: 'Not Authorized for deleting this blog' })
+        if (blog.userId.equals(user?._id)) {
+            res.status(401).json({ message: 'Not Authorized for deleting this blog' })
             // throw new Error('Not Authorized for deleting this blog')
         } else {
             await blog.remove()
-            res.status(204).json({ message: 'delete successfully' })
+            res.status(204).json({ message: 'delete successfully', blog })
         }
 
     } catch (error) {

@@ -1,25 +1,34 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { deleteBlog, updateBlog } from "./postService";
 
 const initialState = {
     posts: [],
     error: null,
     currentPost: '',
-    updatePost: '',
-    deletePost: '',
 };
 
 const postsSlice = createSlice({
     name: "posts",
     initialState,
     reducers: {
+        createPost: (state, action) => {
+            state.error = null;
+            state.posts = [...state.posts, action.payload];
+        },
         getAllPosts: (state, action) => {
             state.error = null;
-            state.posts = Array.isArray(action.payload) ? [...action.payload] : [];
+            state.posts = action.payload;
         },
         getCurrentPost: (state, action) => {
             state.error = null;
             state.currentPost = action.payload;
+        },
+        updateCurrentPost: (state, action) => {
+            state.error = null;
+            state.posts = state.posts.map((post) => post._id === action.payload._id ? action.payload : post);
+        },
+        deleteCurrentPost: (state, action) => {
+            state.error = null;
+            state.posts = state.posts.filter((post) => post._id !== action.payload);
         },
         getPostsFail: (state, action) => {
             state.error = action.payload;
@@ -28,33 +37,12 @@ const postsSlice = createSlice({
             state.error = null;
             state.currentPost = '';
         },
-        updateCurrentPost: (state, action) => {
-            if (action.payload.id) {
-                state.error = null;
-                state.updatePost = action.payload;
-                updateBlog(state.updatePost.id, state.updatePost);
-                state.currentPost = state.currentPost.map((post) => {
-                    if (post._id === state.updatePost.id) {
-                        return { ...post, ...state.updatePost };
-                    }
-                    return post;
-                });
-            }
-        },
-        deleteCurrentPost: (state, action) => {
-            if (action.payload.id) {
-                state.error = null;
-                state.deletePost = state.posts.filter((post) => post._id !== action.payload.id);
-                deleteBlog(state.deletePost.id);
-            }
-        },
 
     },
 });
 
-export const { posts, error, currentPost, updatePost, deletePost } = (state) => state.posts;
 
-export const { getAllPosts, getCurrentPost, getPostsFail, getPostReset } = postsSlice.actions;
+export const { createPost, getAllPosts, getCurrentPost, updateCurrentPost, deleteCurrentPost, getPostsFail, currentPostRest } = postsSlice.actions;
 
 export default postsSlice.reducer;
 
