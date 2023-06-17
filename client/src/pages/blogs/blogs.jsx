@@ -27,7 +27,6 @@ export default function blogs() {
       <section className="flex flex-wrap gap-5">
         {
           error ? <>
-            <h2 className="text-xl">Error: {error}</h2>
             <CustomToast message={error} />
           </>
             :

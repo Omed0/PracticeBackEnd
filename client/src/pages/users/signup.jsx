@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, Link, useLocation } from 'react-router-dom'
 import { LoginUser, RegisterUser } from "../../features/auth/authService";
 
@@ -10,11 +10,11 @@ export default function signup() {
     const [formData, setFormData] = useState(initialState)
     const [isSignup, setIsSignup] = useState(false)
     const [invalidData, setInvalidData] = useState('');
+    // const { userCredintial } = useSelector((state) => state.auth)
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const location = useLocation()
-    const from = location.state?.from.pathname || '/'
+    const { pathname } = useLocation()
 
     const switchMode = () => {
         setIsSignup((prevIsSignup) => !prevIsSignup)
@@ -28,12 +28,12 @@ export default function signup() {
     const handleSubmit = (e) => {
         e.preventDefault();
         try {
-            if (!isSignup) {
-                dispatch(LoginUser(formData))
-            } else {
+            if (isSignup) {
                 dispatch(RegisterUser(formData))
+            } else {
+                dispatch(LoginUser(formData))
             }
-            navigate(from, { replace: true })
+            navigate('/', { replace: true })
             setFormData(initialState)
             setInvalidData('');
         } catch (error) {

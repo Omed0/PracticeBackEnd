@@ -12,7 +12,7 @@ router.route('/')
 router.route('/:id')
     .get(blogController.get_blog_id)
     .patch(protect, blogController.blog_update_id)
-    .delete(protect, blogController.blog_create)
+    .delete(protect, blogController.blog_delete_id)
 
 
 module.exports = router;

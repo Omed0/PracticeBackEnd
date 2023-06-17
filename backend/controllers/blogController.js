@@ -59,14 +59,15 @@ const blog_create = async (req, res) => {
 
 const blog_update_id = async (req, res) => {
     const id = req.params.id
+    const { _id } = req.user
 
     const blog = await Blog.findById(id)
-    const user = await User.findById(req.user._id)
+    const user = await User.findById(_id)
 
     if (!user) return res.status(400).json({ message: 'User Not Found' })
     if (!blog) return res.status(400).json({ message: 'Blog not found' })
 
-    if (!blog.userId.equals(user._id)) return res.status(401).json({ message: 'Not Authorized for update blog' })
+    if (!blog.userId.equals(_id)) return res.status(401).json({ message: 'Not Authorized for update blog' })
 
     try {
         const updateBlog = await blog.updateOne({ _id: id, ...req.body })
@@ -80,21 +81,18 @@ const blog_update_id = async (req, res) => {
 
 const blog_delete_id = async (req, res) => {
     const id = req.params.id
+    const { _id } = req.user
 
     const blog = await Blog.findById(id)
-    const user = await User.findById(req.user?._id)
+    const user = await User.findById(_id)
 
     if (!user) return res.status(400).json({ message: 'User Not Found' })
+    if (!blog) return res.status(400).json({ message: 'Blog not found' })
+    if (!blog.userId.equals(_id)) return res.status(401).json({ message: 'Not Authorized for deleting this blog' })
 
     try {
-        if (blog.userId.equals(user?._id)) {
-            res.status(401).json({ message: 'Not Authorized for deleting this blog' })
-            // throw new Error('Not Authorized for deleting this blog')
-        } else {
-            await blog.remove()
-            res.status(204).json({ message: 'delete successfully', blog })
-        }
-
+        await blog.remove()
+        res.status(200).json({ code: 204, message: 'delete successfully', blog })
     } catch (error) {
         console.log(error)
     }

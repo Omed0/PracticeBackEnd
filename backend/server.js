@@ -30,9 +30,6 @@ app.use(morgan('dev'))
 const corsOptions = {
     origin: 'http://localhost:5173',
     credentials: true,
-    optionsSuccessStatus: 200,
-    methods: 'GET, POST, PUT, DELETE, PATCH',
-    allowedHeaders: 'Content-Type, Authorization, Origin, X-Requested-With, Accept'
 };
 
 app.use(cors(corsOptions));
