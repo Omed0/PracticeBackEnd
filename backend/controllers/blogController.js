@@ -23,7 +23,7 @@ const get_blog_id = async (req, res) => {
         if (!blog) {
             res.status(400).json({ message: 'Post not found' })
         }
-        res.status(200).json({ message: 'get blog by id', blog })
+        res.status(200).json({ message: 'get blog by id', blogId: blog._id })
     } catch (error) {
         console.log(error)
     }
@@ -92,7 +92,7 @@ const blog_delete_id = async (req, res) => {
 
     try {
         await blog.remove()
-        res.status(200).json({ code: 204, message: 'delete successfully', blog })
+        res.status(200).json({ code: 204, message: 'delete successfully', blogId: blog._id })
     } catch (error) {
         console.log(error)
     }

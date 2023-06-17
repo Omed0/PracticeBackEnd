@@ -6,7 +6,7 @@ const { isAdmin } = require('../middleware/authMiddleware')
 
 //Login route
 //Register route
-router.post('/signup', isAdmin, authControler.register_user)
+router.post('/signup', authControler.register_user)
 router.post('/signin', authControler.login_user)
 
 

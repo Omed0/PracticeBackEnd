@@ -26,7 +26,7 @@ export const fetchPosts = () => async (dispatch) => {
 export const specificPost = (id) => async (dispatch) => {
     try {
         const { data } = await api.specificBlog(id);
-        dispatch(getCurrentPost(data.blog))
+        dispatch(getCurrentPost(data.blogId))
     } catch (error) {
         dispatch(getPostsFail(error.message))
     }
@@ -46,7 +46,7 @@ export const updatePost = (id, updatedPost) => async (dispatch) => {
 export const deletePost = (id) => async (dispatch) => {
     try {
         const { data } = await api.deleteBlog(id);
-        dispatch(deleteCurrentPost(data.blog._id))
+        dispatch(deleteCurrentPost(data.blogId))
     } catch (error) {
         dispatch(getPostsFail(error.message))
     }

@@ -4,14 +4,16 @@ import { getAllUsers, getCurrentUser, updateUser, deleteUser } from './userSlice
 
 // ===================== users =====================//
 export const fetchAllUsers = () => async (dispatch) => {
-    const { lastUpdated } = useSelector(state => state.user)
+    // const { lastUpdated } = useSelector(state => state.user)
     try {
-        const response = await api.fetchUsers()
-        const updatedLastModified = response.headers.get('Last-Modified');
+        const { data } = await api.fetchUsers()
+        dispatch(getAllUsers(data.allUser))
 
-        if (updatedLastModified !== lastUpdated) {
-            dispatch(getAllUsers(response.data.users))
-        }
+
+        // const updatedLastModified = response.headers.get('Last-Modified');
+        // if (updatedLastModified !== lastUpdated) {
+        //     dispatch(getAllUsers(response.data.users))
+        // }
     } catch (error) {
         return { message: 'you can not get users', error }
     }
