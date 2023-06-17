@@ -4,7 +4,8 @@ const bcrypt = require('bcrypt')
 
 const get_all_users = async (req, res) => {
     try {
-        const allUser = await User.find().sort({ createdAt: -1 }) // find all blogs and sort by created date reverse order
+        const allUser = await User.find().select('-password').sort({ createdAt: -1 })
+
         res.status(200).json({ message: 'all users returned', allUser })
 
     } catch (error) {

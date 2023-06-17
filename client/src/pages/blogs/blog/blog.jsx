@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { HiOutlineDotsVertical } from "react-icons/hi";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { specificPost, deletePost } from "../../../features/post/postService";
@@ -17,7 +18,7 @@ export default function blog() {
     console.log("blog id : " + currentPost._id + "deleted")
     dispatch(deletePost(id));
     Navigate("/blogs");
-  
+
   }
 
   useEffect(() => {
@@ -75,9 +76,16 @@ export default function blog() {
                 >
                   <p className="mb-6 text-white">{currentPost.body}</p>
                   <small className="border-2 p-2 border-red-500 shadow-md">{currentPost.snippet}</small>
-                  <Link className="delete" onClick={trash}>
-                    <img src={'/trashcan.svg'} alt='delete blog' />
-                  </Link>
+                  <select className="delete" >
+                    <HiOutlineDotsVertical size={26} color="white" >
+                      <option value="delete" onClick={trash}>
+                        Delete
+                      </option>
+                      <option value="edit">
+                        <Link to={`/blogs/${currentPost._id}`}>Edit</Link>
+                      </option>
+                    </HiOutlineDotsVertical>
+                  </select>
                 </motion.div>
 
               </motion.section>

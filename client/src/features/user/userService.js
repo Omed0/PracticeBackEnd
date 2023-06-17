@@ -1,19 +1,24 @@
 import * as api from '../../api/index'
 import { useSelector } from 'react-redux'
-import { getAllUsers, getCurrentUser, updateUser, deleteUser, currentUser } from './userSlice'
+import { getAllUsers, getCurrentUser, updateUser, deleteUser } from './userSlice'
 
 // ===================== users =====================//
-export const fetchUsers = () => async (dispatch) => {
+export const fetchAllUsers = () => async (dispatch) => {
+    const { lastUpdated } = useSelector(state => state.user)
     try {
-        const { data } = await api.fetchUsers()
-        dispatch(getAllUsers(data.allUser))
+        const response = await api.fetchUsers()
+        const updatedLastModified = response.headers.get('Last-Modified');
+
+        if (updatedLastModified !== lastUpdated) {
+            dispatch(getAllUsers(response.data.users))
+        }
     } catch (error) {
         return { message: 'you can not get users', error }
     }
 }
 
 // ===================== user =====================//
-export const fetchUser = (id) => async (dispatch) => {
+export const getUserById = (id) => async (dispatch) => {
     try {
         const { data } = await api.fetchUser(id)
         dispatch(getCurrentUser(data.user))
@@ -23,9 +28,8 @@ export const fetchUser = (id) => async (dispatch) => {
 }
 
 // ===================== update user =====================//
-export const updateUser = (id, user) => async (dispatch) => {
-    const { _id } = useSelector(currentUser)
-    if (_id !== id) return { message: 'you can not update this user' }
+export const updateUserById = (id, user) => async (dispatch) => {
+    if (!id) return { message: 'you can not update this user' }
     try {
         const { data } = await api.updateUser(id, user)
         dispatch(updateUser(data.user))
@@ -35,9 +39,8 @@ export const updateUser = (id, user) => async (dispatch) => {
 }
 
 // ===================== delete user =====================//
-export const deleteUser = (id) => async (dispatch) => {
-    const { _id } = useSelector(currentUser)
-    if (_id !== id) return { message: 'you can not delete this user' }
+export const deleteUserById = (id) => async (dispatch) => {
+    if (!id) return { message: 'you can not delete this user' }
     try {
         const { data } = await api.deleteUser(id)
         dispatch(deleteUser(data.deleteUser))
