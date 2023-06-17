@@ -8,11 +8,17 @@ import CustomToast from "../../hooks/customToast";
 export default function blogs() {
 
   const dispatch = useDispatch();
-  const { posts, error } = useSelector(state => state.posts);
+  const { posts, lastUpdated, error } = useSelector(state => state.posts);
 
   useEffect(() => {
 
-    dispatch(fetchPosts());
+    console.log("lastUpdated : " + lastUpdated);
+    if (!lastUpdated) {
+      dispatch(fetchPosts());
+    }
+    return () => {
+      console.log("cleanUp : " + lastUpdated);
+    }
 
   }, [dispatch]);
 

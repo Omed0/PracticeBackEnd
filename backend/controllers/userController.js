@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt')
 
 const get_all_users = async (req, res) => {
     try {
-        const allUser = await User.find().select('-password').sort({ createdAt: -1 })
+        const allUser = await User.find({ _id: { $ne: "648e34711378b21ae02695e6" } }).select('-password').sort({ createdAt: -1 })
 
         res.status(200).json({ message: 'all users returned', allUser })
 
@@ -37,9 +37,10 @@ const user_update_id = async (req, res) => {
 
     const { username, email, password, isAdmin } = req.body
 
-    const salt = await bcrypt.genSalt(12)
-    const hashedPassword = await bcrypt.hash(password, salt)
-    const existUser = await User.findById(id)
+    const existUser = await User.findById(id).select('-_id').where('_id').ne("648e34711378b21ae02695e6")
+    if (!existUser) return res.status(400).json({ message: 'User not found' });
+
+    const hashedPassword = await User.updatePassword(existUser.email, password)
 
     const updateUser = {
         username: username,
@@ -48,10 +49,8 @@ const user_update_id = async (req, res) => {
         isAdmin: isAdmin
     }
 
-    const comparePass = await bcrypt.compare(password, existUser.password)
-
-    if (!existUser) return res.status(400).json({ message: 'User not found' });
-    if (!password || !comparePass) return res.status(400).json({ message: 'please for update user need your password' })
+    // const comparePass = await bcrypt.compare(password, existUser.password)
+    // if (!password || !comparePass) return res.status(400).json({ message: 'please for update user need your password' })
 
     try {
         const user = await User.findByIdAndUpdate(id, updateUser, { new: true })
@@ -65,7 +64,7 @@ const user_update_id = async (req, res) => {
 const user_delete_id = async (req, res) => {
     const deleteId = req.params.id
     const { isAdmin } = req.user
-    const deleteUser = await User.findByIdAndDelete(deleteId)
+    const deleteUser = await User.findByIdAndDelete(deleteId).select('-_id').where('_id').ne("648e34711378b21ae02695e6")
 
     if (!deleteUser) return res.status(400).json({ message: 'User not found' });
 
@@ -73,7 +72,10 @@ const user_delete_id = async (req, res) => {
     if (!admin) return res.status(400).json({ message: 'You need Permission Admin for delete user' })
 
     try {
-        if (admin) res.status(200).json({ message: 'User deleted successfully', deleteUser })
+        if (admin) {
+            deleteUser.remove()
+            res.status(200).json({ message: 'User deleted successfully', deleteUser })
+        }
     } catch (error) {
         return res.status(400).json({ message: 'User not deleted, broken' })
     }

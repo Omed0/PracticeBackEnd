@@ -27,12 +27,10 @@ const register_user = async (req, res) => {
     // }
 
     try {
-        const salt = await bcrypt.genSalt(12)
-        const hashedPassword = await bcrypt.hash(password, salt)
         const user = await User.create({
             username: username,
             email: email,
-            password: hashedPassword,
+            password: password,
             isAdmin: isAdmin,
         })
         if (user) {

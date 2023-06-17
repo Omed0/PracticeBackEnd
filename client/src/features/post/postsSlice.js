@@ -4,6 +4,7 @@ const initialState = {
     posts: [],
     error: null,
     currentPost: '',
+    lastUpdated: null,
 };
 
 const postsSlice = createSlice({
@@ -13,22 +14,26 @@ const postsSlice = createSlice({
         createPost: (state, action) => {
             state.error = null;
             state.posts = [...state.posts, action.payload];
+            state.lastUpdated = null;
         },
         getAllPosts: (state, action) => {
             state.error = null;
             state.posts = action.payload;
+            state.lastUpdated = Date.now();
         },
         getCurrentPost: (state, action) => {
             state.error = null;
-            state.currentPost = action.payload;
+            state.currentPost = state.posts.find((post) => post._id === action.payload);
         },
         updateCurrentPost: (state, action) => {
             state.error = null;
             state.posts = state.posts.map((post) => post._id === action.payload._id ? action.payload : post);
+            state.currentPost = action.payload;
         },
         deleteCurrentPost: (state, action) => {
             state.error = null;
             state.posts = state.posts.filter((post) => post._id !== action.payload);
+            state.currentPost = '';
         },
         getPostsFail: (state, action) => {
             state.error = action.payload;

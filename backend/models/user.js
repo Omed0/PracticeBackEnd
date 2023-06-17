@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const bcrypt = require('bcrypt');
 
 
 const userSchema = new Schema({
@@ -23,26 +24,32 @@ const userSchema = new Schema({
     }
 }, { timestamps: true });
 
+userSchema.pre('save', async function (next) {
+    try {
+        if (!this.isModified('password')) {
+            return next();
+        }
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(this.password, salt);
+
+        this.password = hashedPassword;
+        next();
+    } catch (error) {
+        next(error);
+    }
+});
+
+userSchema.statics.updatePassword = async function (email, newPassword) {
+    try {
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+        await this.updateOne({ email }, { password: hashedPassword });
+    } catch (error) {
+        throw error;
+    }
+};
+
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;
-
-
-// module.exports.getUserById = function (id, callback) {
-//     User.findById(id, callback);
-// }
-
-// module.exports.getUserByUsername = function (username, callback) {
-//     const query = { username: username }
-//     User.findOne(query, callback);
-// }
-
-// module.exports.addUser = function (newUser, callback) {
-//     bcrypt.genSalt(10, (err, salt) => {
-//         if (err) throw (err);
-//         bcrypt.hash(newUser.password, salt, (err, hash) => {
-//             newUser.password = hash;
-//             newUser.save(callback);
-//         });
-//     });
-// }
