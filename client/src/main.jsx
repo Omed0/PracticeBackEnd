@@ -9,7 +9,7 @@ import Create from "./pages/blogs/create.jsx";
 import Blogs from "./pages/blogs/blogs.jsx";
 import Blog from "./pages/blogs/blog/blog.jsx";
 import User from "./pages/users/user.jsx";
-import ProfileUser from "./pages/users/profileUser.jsx";
+import EditUser from "./pages/users/editUser.jsx";
 import Signup from "./pages/users/signup.jsx";
 import NoMatch from "./components/error/nomatch.jsx";
 import ErrorPage from "./components/error/error-page.jsx";
@@ -44,7 +44,7 @@ const router = createBrowserRouter(
       <Route path="users" >
         <Route index={true} element={<User />} />
         <Route element={<PrivateRoute allowedRole={[Role.admin, Role.user]} />} >
-          <Route path=":id" element={<ProfileUser />} />
+          <Route path=":id/edit" element={<EditUser />} />
         </Route>
       </Route>
 

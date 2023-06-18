@@ -1,5 +1,5 @@
 const User = require('../models/user')
-const bcrypt = require('bcrypt')
+// const bcrypt = require('bcrypt')
 
 
 const get_all_users = async (req, res) => {
@@ -24,7 +24,7 @@ const user_get_id = async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        res.status(200).json({ message: 'User Details', user });
+        res.status(200).json({ message: 'User Details', userId: user._id });
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -74,7 +74,7 @@ const user_delete_id = async (req, res) => {
     try {
         if (admin) {
             deleteUser.remove()
-            res.status(200).json({ message: 'User deleted successfully', deleteUser })
+            res.status(200).json({ message: 'User deleted successfully', deleteUserId: deleteUser._id })
         }
     } catch (error) {
         return res.status(400).json({ message: 'User not deleted, broken' })
