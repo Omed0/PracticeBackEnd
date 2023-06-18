@@ -24,7 +24,8 @@ export default function User() {
     }, [dispatch])
 
 
-    const trash = (id) => {
+    const trash = (event) => {
+        const id = event.target.getAttribute("itemID")
         console.log("user id : " + id + "deleted")
 
         dispatch(deleteUserById(id))
@@ -56,7 +57,7 @@ export default function User() {
                                 <Link to={`/users/${user._id}/edit`} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                                     Edit Profile
                                 </Link>
-                                <button onClick={() => trash(user._id)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                                <button onClick={trash} itemID={user._id} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
                                     Delete Profile
                                 </button>
                             </div>
