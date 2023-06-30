@@ -12,7 +12,7 @@ export default function PrivateRoute({ allowedRole }) {
             ?
             <Outlet />
             : userCredintial && userCredintial.length > 0
-                ? <Navigate to='/Home' state={{ from: pathname }} replace />
+                ? <Navigate to='/' state={{ from: pathname }} replace />
                 : <Navigate to='/auth' state={{ from: pathname }} replace />
     )
 }
