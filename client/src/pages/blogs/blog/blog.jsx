@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,6 +10,7 @@ import CustomToast from "../../../hooks/customToast";
 
 export default function blog() {
   const { id } = useParams();
+  const [isOpen, setIsOpen] = useState(false);
   const { currentPost, error } = useSelector(state => state.posts);
   const dispatch = useDispatch();
   const Navigate = useNavigate();
@@ -76,16 +77,14 @@ export default function blog() {
                 >
                   <p className="mb-6 text-white">{currentPost.body}</p>
                   <small className="border-2 p-2 border-red-500 shadow-md">{currentPost.snippet}</small>
-                  <select className="delete" >
-                    <HiOutlineDotsVertical size={26} color="white" >
-                      <option value="delete" onClick={trash}>
-                        Delete
-                      </option>
-                      <option value="edit">
-                        <Link to={`/blogs/${currentPost._id}`}>Edit</Link>
-                      </option>
-                    </HiOutlineDotsVertical>
-                  </select>
+                  <div className="absolute top-14 right-10 bg-red-500 hover:opacity-80 duration-150" onClick={() => setIsOpen(prev => !prev)}>
+                    <HiOutlineDotsVertical size={26} color="white" />
+                    <section className={`${isOpen ? 'visible flex flex-col gap-2' : 'hidden'} absolute top-8 -left-8 px-2 py-3 bg-zinc-500`}>
+                      <button className="text-white hover:scale-110 duration-300 " onClick={trash}>Delete</button>
+                      <Link className="text-white hover:scale-110 duration-300 " to={`/blogs/${currentPost._id}/edit`}>Edit</Link>
+                    </section>
+                  </div>
+
                 </motion.div>
 
               </motion.section>
